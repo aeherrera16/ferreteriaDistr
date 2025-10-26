@@ -29,8 +29,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Nombre).HasColumnName("nombre");
             entity.Property(e => e.Descripcion).HasColumnName("descripcion");
             entity.Property(e => e.CategoriaId).HasColumnName("categoriaid");
-            entity.Property(e => e.PrecioCompra).HasColumnName("preciocompra");
-            entity.Property(e => e.PrecioVenta).HasColumnName("precioventa");
+            entity.Property(e => e.PrecioCompra).HasColumnName("preciocompra").HasColumnType("decimal(10,2)"); 
+            entity.Property(e => e.PrecioVenta).HasColumnName("precioventa").HasColumnType("decimal(10,2)");
             entity.Property(e => e.Stock).HasColumnName("stock");
             entity.Property(e => e.StockMinimo).HasColumnName("stockminimo");
             entity.Property(e => e.ProveedorId).HasColumnName("proveedorid");
