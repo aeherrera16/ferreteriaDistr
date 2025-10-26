@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 24px auto; }
+nav a { margin-right: 8px; }
+label { display:block; margin:6px 0; }
+input { padding:6px; }
+button { padding:8px 12px; margin-top:8px; }

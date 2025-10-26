@@ -1,0 +1,14 @@
+<% layout('layout') -%>
+<h2>Consultar por código</h2>
+<form method="post" action="/articulos/consultar">
+  <label>Código <input name="codigo"></label>
+  <button>Buscar</button>
+</form>
+<% if (error) { %><p style="color:red"><%= error %></p><% } %>
+<% if (articulo) { %>
+  <h3>Resultado</h3>
+  <pre><%= JSON.stringify(articulo, null, 2) %></pre>
+  <% if (articulo.Stock < articulo.StockMinimo) { %>
+    <p style="color:orange">⚠ Stock bajo el mínimo</p>
+  <% } %>
+<% } %>
