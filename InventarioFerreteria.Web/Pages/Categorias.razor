@@ -1,0 +1,230 @@
+@using InventarioFerreteria.Web.Services
+@inject InventarioSoapClient SoapClient
+
+<div class="row mb-3">
+    <div class="col">
+        <button class="btn btn-success" @onclick="MostrarFormularioNuevo">
+            ➕ Nueva Categoría
+        </button>
+    </div>
+</div>
+
+@if (mostrarFormulario)
+{
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@(categoriaEditando == null ? "➕ Nueva Categoría" : "✏️ Editar Categoría")</h5>
+        </div>
+        <div class="card-body">
+            <EditForm Model="@formulario" OnValidSubmit="GuardarCategoria">
+                <DataAnnotationsValidator />
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre *</label>
+                    <InputText @bind-Value="formulario.Nombre" class="form-control" />
+                    <ValidationMessage For="@(() => formulario.Nombre)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <InputTextArea @bind-Value="formulario.Descripcion" class="form-control" rows="3" />
+                </div>
+
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger">❌ @mensajeError</div>
+                }
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary" disabled="@guardando">
+                        @if (guardando)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        💾 Guardar
+                    </button>
+                    <button type="button" class="btn btn-secondary" @onclick="CancelarFormulario">
+                        ❌ Cancelar
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@if (cargando)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando categorías...</p>
+    </div>
+}
+else if (categorias.Count == 0)
+{
+    <div class="alert alert-info">
+        ℹ️ No hay categorías registradas. Haga clic en "Nueva Categoría" para agregar una.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var categoria in categorias)
+        {
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">🏷️ @categoria.Nombre</h5>
+                        <p class="card-text text-muted">
+                            @(string.IsNullOrEmpty(categoria.Descripcion) ? "Sin descripción" : categoria.Descripcion)
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group btn-group-sm w-100">
+                            <button class="btn btn-outline-primary" @onclick="@(() => EditarCategoria(categoria))">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn btn-outline-danger" @onclick="@(() => EliminarCategoria(categoria.Id))">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="alert alert-info mt-3">
+        📊 Total de categorías: <strong>@categorias.Count</strong>
+    </div>
+    @if (!string.IsNullOrEmpty(mensajeError) && !mostrarFormulario)
+{
+    <div class="alert alert-danger mt-3">
+        ❌ @mensajeError
+        <button type="button" class="btn-close" @onclick="@(() => mensajeError = string.Empty)"></button>
+    </div>
+}
+}
+
+@code {
+    private List<CategoriaDto> categorias = new();
+    private bool cargando = true;
+    private bool mostrarFormulario = false;
+    private bool guardando = false;
+    private string mensajeError = string.Empty;
+    private CategoriaDto? categoriaEditando = null;
+    private CategoriaFormulario formulario = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatos();
+    }
+
+    private async Task CargarDatos()
+    {
+        cargando = true;
+        try
+        {
+            var resultado = await SoapClient.ObtenerTodasCategoriasAsync();
+            if (resultado.Exito && resultado.Datos != null)
+            {
+                categorias = resultado.Datos;
+            }
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private void MostrarFormularioNuevo()
+    {
+        categoriaEditando = null;
+        formulario = new CategoriaFormulario();
+        mostrarFormulario = true;
+        mensajeError = string.Empty;
+    }
+
+    private void EditarCategoria(CategoriaDto categoria)
+    {
+        categoriaEditando = categoria;
+        formulario = new CategoriaFormulario
+        {
+            Nombre = categoria.Nombre,
+            Descripcion = categoria.Descripcion
+        };
+        mostrarFormulario = true;
+        mensajeError = string.Empty;
+    }
+
+    private async Task GuardarCategoria()
+    {
+        guardando = true;
+        mensajeError = string.Empty;
+
+        try
+        {
+            RespuestaDto<CategoriaDto> resultado;
+
+            if (categoriaEditando == null)
+            {
+                resultado = await SoapClient.InsertarCategoriaAsync(formulario.Nombre, formulario.Descripcion);
+            }
+            else
+            {
+                resultado = await SoapClient.ActualizarCategoriaAsync(categoriaEditando.Id, formulario.Nombre, formulario.Descripcion);
+            }
+
+            if (resultado.Exito)
+            {
+                mostrarFormulario = false;
+                await CargarDatos();
+            }
+            else
+            {
+                mensajeError = resultado.Mensaje;
+            }
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            guardando = false;
+        }
+    }
+
+    private void CancelarFormulario()
+    {
+        mostrarFormulario = false;
+        categoriaEditando = null;
+        mensajeError = string.Empty;
+    }
+
+    private async Task EliminarCategoria(int id)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "¿Está seguro de eliminar esta categoría?"))
+        {
+            var resultado = await SoapClient.EliminarCategoriaAsync(id);
+            if (resultado.Exito)
+            {
+                await CargarDatos();
+            }
+            else
+            {
+                mensajeError = resultado.Mensaje;
+            }
+        }
+    }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+
+    public class CategoriaFormulario
+    {
+        [Required(ErrorMessage = "El nombre es requerido")]
+        public string Nombre { get; set; } = string.Empty;
+        public string? Descripcion { get; set; }
+    }
+}
