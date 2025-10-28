@@ -1,0 +1,95 @@
+﻿@page "/"
+@using InventarioFerreteria.Web.Services
+@inject InventarioSoapClient SoapClient
+@inject NavigationManager NavManager
+
+<PageTitle>Inventario Ferretería</PageTitle>
+
+@if (!isAuthenticated)
+{
+    <div class="container mt-5">
+        <div class="alert alert-warning text-center">
+            <h4>⚠️ Acceso Restringido</h4>
+            <p>Debe iniciar sesión para acceder al sistema.</p>
+            <button class="btn btn-primary" @onclick="GoToLogin">Iniciar Sesión</button>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-4">📦 Sistema de Inventario</h1>
+                <p class="lead">Gestión completa de artículos, categorías y proveedores</p>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-danger" @onclick="Logout">
+                    🚪 Cerrar Sesión
+                </button>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link @(tabActual == "articulos" ? "active" : "")" 
+                        @onclick="@(() => CambiarTab("articulos"))">
+                    📦 Artículos
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link @(tabActual == "categorias" ? "active" : "")" 
+                        @onclick="@(() => CambiarTab("categorias"))">
+                    🏷️ Categorías
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link @(tabActual == "proveedores" ? "active" : "")" 
+                        @onclick="@(() => CambiarTab("proveedores"))">
+                    🚚 Proveedores
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            @if (tabActual == "articulos")
+            {
+                <Articulos />
+            }
+            else if (tabActual == "categorias")
+            {
+                <Categorias />
+            }
+            else if (tabActual == "proveedores")
+            {
+                <Proveedores />
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool isAuthenticated = false;
+    private string tabActual = "articulos";
+
+    protected override void OnInitialized()
+    {
+        isAuthenticated = !string.IsNullOrEmpty(SoapClient.Token);
+    }
+
+    private void GoToLogin()
+    {
+        NavManager.NavigateTo("/login");
+    }
+
+    private void Logout()
+    {
+        SoapClient.Token = null;
+        NavManager.NavigateTo("/login");
+    }
+
+    private void CambiarTab(string tab)
+    {
+        tabActual = tab;
+    }
+}
