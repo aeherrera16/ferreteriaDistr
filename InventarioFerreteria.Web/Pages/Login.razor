@@ -1,0 +1,108 @@
+@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using InventarioFerreteria.Web.Services
+@inject InventarioSoapClient SoapClient
+@inject NavigationManager NavManager
+
+<PageTitle>Login - Inventario Ferretería</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h3 class="card-title">🔐 Iniciar Sesión</h3>
+                        <p class="text-muted">Sistema de Inventario Ferretería</p>
+                    </div>
+
+                    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+                        <DataAnnotationsValidator />
+
+                        <div class="mb-3">
+                            <label class="form-label">Usuario</label>
+                            <InputText @bind-Value="loginModel.Usuario" class="form-control" placeholder="admin" />
+                            <ValidationMessage For="@(() => loginModel.Usuario)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <InputText @bind-Value="loginModel.Password" type="password" class="form-control" placeholder="••••••••" />
+                            <ValidationMessage For="@(() => loginModel.Password)" />
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                ❌ @errorMessage
+                            </div>
+                        }
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    <span>Autenticando...</span>
+                                }
+                                else
+                                {
+                                    <span>Iniciar Sesión</span>
+                                }
+                            </button>
+                        </div>
+                    </EditForm>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Usuario de prueba: <strong>admin</strong> / <strong>Admin123!</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            var resultado = await SoapClient.AutenticarAsync(loginModel.Usuario, loginModel.Password);
+
+            if (resultado.Exito)
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = resultado.Mensaje;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error de conexión: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "El usuario es requerido")]
+        public string Usuario { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "La contraseña es requerida")]
+        public string Password { get; set; } = string.Empty;
+    }
+}

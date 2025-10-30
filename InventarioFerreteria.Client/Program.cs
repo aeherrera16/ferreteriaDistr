@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace InventarioFerreteria.Client;
 
@@ -337,6 +338,7 @@ class Program
                         var artActivo = ObtenerValor(articulo, "Activo", namespaces) == "true" ? "Sí" : "No";
                         var artRequiere = ObtenerValor(articulo, "RequiereReposicion", namespaces) == "true" ? "⚠️" : "✅";
 
+                        Console.WriteLine($"[DEBUG] PrecioCompra RAW: '{artPrecioCompra}'");
                         // Truncar textos largos
                         if (artNombre.Length > 23)
                             artNombre = artNombre.Substring(0, 22) + "…";
@@ -363,12 +365,13 @@ class Program
                         string precioCompraStr = "";
                         string precioVentaStr = "";
                         
-                        if (decimal.TryParse(artPrecioCompra, out var pc))
+                        // Busca estas líneas y reemplázalas:
+                        if (decimal.TryParse(artPrecioCompra, NumberStyles.Any, CultureInfo.InvariantCulture, out var pc))
                             precioCompraStr = $"${pc:F2}";
                         else
                             precioCompraStr = artPrecioCompra;
                             
-                        if (decimal.TryParse(artPrecioVenta, out var pv))
+                        if (decimal.TryParse(artPrecioVenta, NumberStyles.Any, CultureInfo.InvariantCulture, out var pv))
                             precioVentaStr = $"${pv:F2}";
                         else
                             precioVentaStr = artPrecioVenta;
