@@ -63,3 +63,10 @@ System.IO.IOException: Failed to bind to address http://[::]:5000: address alrea
    at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
    at Program.<Main>$(String[] args) in C:\Users\Anahy\Desktop\distribuidas\InventarioFerreteria\InventarioFerreteria.SoapService\Program.cs:line 198
 [2025-10-30 08:45:42.170 -05:00 INF] === Servicio SOAP detenido ===
+[2025-10-30 10:18:31.236 -05:00 INF] === Iniciando Servicio SOAP de Inventario Ferretería ===
+[2025-10-30 10:18:31.351 -05:00 INF] Servicio configurado en: http://localhost:5000
+[2025-10-30 10:18:32.094 -05:00 INF] ✓ Conexión a base de datos PostgreSQL establecida correctamente
+[2025-10-30 10:18:32.107 -05:00 INF] ✓ Endpoint SOAP configurado en: http://localhost:5000/InventarioService.asmx
+[2025-10-30 10:18:32.113 -05:00 INF] === Servicio SOAP listo para recibir peticiones ===
+[2025-10-30 10:18:32.116 -05:00 INF] WSDL disponible en: http://localhost:5000/InventarioService.asmx?wsdl
+[2025-10-30 10:45:15.711 -05:00 INF] === Servicio SOAP detenido ===

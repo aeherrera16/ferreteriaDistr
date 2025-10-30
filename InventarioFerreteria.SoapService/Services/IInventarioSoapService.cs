@@ -9,7 +9,7 @@ namespace InventarioFerreteria.SoapService.Services;
 public interface IInventarioSoapService
 {
     // === AUTENTICACIÓN ===
-    [OperationContract]
+    [OperationContract(Name = "Autenticar")]
     Task<RespuestaDTO<string>> AutenticarAsync(string nombreUsuario, string password);
 
     // === ARTÍCULOS ===
