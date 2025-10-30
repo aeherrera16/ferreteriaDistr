@@ -10,12 +10,9 @@ using InventarioFerreteria.SoapService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-<<<<<<< Updated upstream
-=======
 // Fijar el puerto - Escuchar en TODAS las interfaces de red (0.0.0.0)
 builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
->>>>>>> Stashed changes
 // Configurar PostgreSQL como TRANSIENT
 builder.Services.AddTransient<ApplicationDbContext>(provider =>
 {
