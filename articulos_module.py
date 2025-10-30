@@ -384,7 +384,7 @@ class ArticulosModule(ctk.CTkFrame):
         # Crear ventana modal
         ventana = ctk.CTkToplevel(self.master)
         ventana.title(titulo)
-        ventana.geometry("500x600")
+        ventana.geometry("550x750")
         ventana.transient(self.master)
         ventana.grab_set()
         ventana.resizable(False, False)
@@ -395,23 +395,7 @@ class ArticulosModule(ctk.CTkFrame):
             self.master.winfo_rooty() + 100
         ))
         
-        # Frame principal
-        main_frame = ctk.CTkFrame(ventana)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-        
-        # Título
-        title_label = ctk.CTkLabel(
-            main_frame,
-            text=titulo,
-            font=ctk.CTkFont(size=24, weight="bold"),
-            text_color="#1976D2"
-        )
-        title_label.pack(pady=(0, 20))
-        
-        # Frame para campos
-        campos_frame = ctk.CTkFrame(main_frame)
-        campos_frame.pack(fill="both", expand=True, padx=10, pady=10)
-        
+        # ===== CREAR VARIABLES PRIMERO (ANTES DE LOS WIDGETS) =====
         # Variables para los campos
         if es_edicion:
             # Para edición, usar los datos existentes
@@ -431,12 +415,38 @@ class ArticulosModule(ctk.CTkFrame):
             precio_inicial = '0.00'
             stock_inicial = '0'
         
-        codigo_var = ctk.StringVar(value=codigo_inicial)
-        nombre_var = ctk.StringVar(value=nombre_inicial)
-        descripcion_var = ctk.StringVar(value=descripcion_inicial)
-        categoria_var = ctk.StringVar(value=categoria_inicial)
-        precio_var = ctk.StringVar(value=precio_inicial)
-        stock_var = ctk.StringVar(value=stock_inicial)
+        codigo_var = ctk.StringVar(master=ventana, value=codigo_inicial)
+        nombre_var = ctk.StringVar(master=ventana, value=nombre_inicial)
+        descripcion_var = ctk.StringVar(master=ventana, value=descripcion_inicial)
+        categoria_var = ctk.StringVar(master=ventana, value=categoria_inicial)
+        precio_var = ctk.StringVar(master=ventana, value=precio_inicial)
+        stock_var = ctk.StringVar(master=ventana, value=stock_inicial)
+        
+        # ===== AHORA CREAR LA INTERFAZ =====
+        # Frame principal con título fijo arriba
+        header_frame = ctk.CTkFrame(ventana, fg_color="transparent")
+        header_frame.pack(fill="x", padx=20, pady=(20, 0))
+        
+        # Título
+        title_label = ctk.CTkLabel(
+            header_frame,
+            text=titulo,
+            font=ctk.CTkFont(size=24, weight="bold"),
+            text_color="#1976D2"
+        )
+        title_label.pack()
+        
+        # Frame scrollable para campos
+        campos_scroll = ctk.CTkScrollableFrame(
+            ventana,
+            fg_color="transparent",
+            height=500
+        )
+        campos_scroll.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        # Frame para campos dentro del scroll
+        campos_frame = ctk.CTkFrame(campos_scroll, fg_color="transparent")
+        campos_frame.pack(fill="both", expand=True)
         
         # Campo Código
         codigo_label_text = "Código:" if es_edicion else "Código: (Generado automáticamente)"
@@ -516,19 +526,21 @@ class ArticulosModule(ctk.CTkFrame):
         )
         entry_stock.pack(fill="x", pady=(0, 15))
         
-        # Frame para botones
-        botones_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        botones_frame.pack(fill="x", pady=10)
+        # Frame para botones (fuera del scroll, fijo abajo)
+        botones_frame = ctk.CTkFrame(ventana, fg_color="transparent")
+        botones_frame.pack(fill="x", padx=20, pady=(0, 20))
         
         def guardar_articulo():
             """Guarda el artículo (crear o actualizar)"""
+            print(f"DEBUG - Código: '{codigo_var.get()}'")
+            print(f"DEBUG - Nombre: '{nombre_var.get()}'")
+            
             # Validar campos obligatorios
             if not codigo_var.get().strip():
                 messagebox.showerror("Error", "El código es obligatorio")
                 return
             if not nombre_var.get().strip():
                 messagebox.showerror("Error", "El nombre es obligatorio")
-                entry_nombre.focus()
                 return
             
             try:

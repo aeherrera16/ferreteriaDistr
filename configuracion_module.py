@@ -351,28 +351,49 @@ class ConfiguracionModule(ctk.CTkFrame):
         btn_importar.grid(row=0, column=2, padx=(10, 0), sticky="ew")
     
     def cargar_configuracion(self):
-        """Carga la configuración actual"""
+        """Carga la configuración actual o crea archivo por defecto"""
         try:
-            # Cargar desde config.py
-            self.soap_url_var.set(getattr(config, 'SOAP_SERVICE_URL', 'http://localhost:5000/InventarioService.asmx'))
+            # Valores por defecto (localhost para uso local, cambiar desde GUI para red)
+            defaults = {
+                'soap_url': 'http://localhost:5000/InventarioService.asmx',
+                'db_host': 'localhost',
+                'db_port': '5432',
+                'db_name': 'postgres',
+                'db_user': 'admin',
+                'tema': 'light',
+                'idioma': 'Español',
+                'descripcion': '⚙️ Para uso en red: Ir a Configuración → Cambiar URL a http://IP_DEL_SERVIDOR:5000/InventarioService.asmx'
+            }
             
-            db_config = getattr(config, 'DB_CONFIG', {})
-            self.db_host_var.set(db_config.get('host', 'localhost'))
-            self.db_port_var.set(str(db_config.get('port', 5432)))
-            self.db_name_var.set(db_config.get('database', 'ferreteria'))
-            self.db_user_var.set(db_config.get('user', 'postgres'))
+            # Si no existe el archivo, crearlo con valores por defecto
+            if not os.path.exists('connection_config.json'):
+                print("📝 Creando connection_config.json con valores por defecto...")
+                with open('connection_config.json', 'w', encoding='utf-8') as f:
+                    json.dump(defaults, f, indent=2, ensure_ascii=False)
             
-            self.tema_var.set("light")
-            self.idioma_var.set("Español")
+            # Cargar desde archivo
+            with open('connection_config.json', 'r', encoding='utf-8') as f:
+                saved_config = json.load(f)
             
-            # Cargar desde archivo de configuración si existe
-            if os.path.exists('connection_config.json'):
-                with open('connection_config.json', 'r') as f:
-                    saved_config = json.load(f)
-                    self.soap_url_var.set(saved_config.get('soap_url', self.soap_url_var.get()))
+            # Aplicar valores cargados
+            self.soap_url_var.set(saved_config.get('soap_url', defaults['soap_url']))
+            self.db_host_var.set(saved_config.get('db_host', defaults['db_host']))
+            self.db_port_var.set(saved_config.get('db_port', defaults['db_port']))
+            self.db_name_var.set(saved_config.get('db_name', defaults['db_name']))
+            self.db_user_var.set(saved_config.get('db_user', defaults['db_user']))
+            self.tema_var.set(saved_config.get('tema', defaults['tema']))
+            self.idioma_var.set(saved_config.get('idioma', defaults['idioma']))
+            
+            print(f"✓ Configuración cargada: {saved_config.get('soap_url')}")
                     
         except Exception as e:
             print(f"Error cargando configuración: {e}")
+            # Si falla, usar valores por defecto en memoria
+            self.soap_url_var.set('http://10.40.3.144:5000/InventarioService.asmx')
+            self.db_host_var.set('10.40.3.144')
+            self.db_port_var.set('5432')
+            self.db_name_var.set('postgres')
+            self.db_user_var.set('admin')
     
     def guardar_configuracion(self):
         """Guarda la configuración actual"""
@@ -386,14 +407,14 @@ class ConfiguracionModule(ctk.CTkFrame):
                 'db_user': self.db_user_var.get(),
                 'tema': self.tema_var.get(),
                 'idioma': self.idioma_var.get(),
-                'auto_backup': self.auto_backup_var.get(),
-                'auto_update': self.auto_update_var.get(),
-                'notificaciones': self.notificaciones_var.get()
+                'descripcion': f'Configuración guardada el {datetime.now().strftime("%Y-%m-%d %H:%M")}'
             }
             
             # Guardar en archivo
-            with open('connection_config.json', 'w') as f:
-                json.dump(config_data, f, indent=2)
+            with open('connection_config.json', 'w', encoding='utf-8') as f:
+                json.dump(config_data, f, indent=2, ensure_ascii=False)
+            
+            print(f"✓ Configuración guardada: {config_data['soap_url']}")
             
             # Actualizar configuración global
             config.SOAP_SERVICE_URL = self.soap_url_var.get()
