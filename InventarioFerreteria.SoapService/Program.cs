@@ -11,7 +11,7 @@ using InventarioFerreteria.SoapService.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Fijar el puerto
-builder.WebHost.UseUrls("http://localhost:5000");
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 // Configurar PostgreSQL como TRANSIENT
 builder.Services.AddTransient<ApplicationDbContext>(provider =>
