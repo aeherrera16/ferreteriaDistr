@@ -10,8 +10,9 @@ using InventarioFerreteria.SoapService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Fijar el puerto
-builder.WebHost.UseUrls("http://localhost:5000");
+// Fijar el puerto y escuchar en todas las interfaces para permitir conexiones desde la red
+// En desarrollo esto es útil; en producción debe usarse un reverse-proxy y reglas de firewall adecuadas
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 // Configurar PostgreSQL como TRANSIENT
 builder.Services.AddTransient<ApplicationDbContext>(provider =>

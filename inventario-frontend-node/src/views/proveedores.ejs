@@ -1,0 +1,29 @@
+<div class="container mt-4">
+  <h2>Proveedores</h2>
+  <% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+  <a href="/proveedores/crear" class="btn btn-success mb-2">Nuevo Proveedor</a>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Dirección</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% proveedores.forEach(p => { %>
+      <tr>
+        <td><%= p.id %></td>
+        <td><%= p.nombre %></td>
+        <td><%= p.telefono %></td>
+        <td><%= p.email %></td>
+        <td><%= p.direccion %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
