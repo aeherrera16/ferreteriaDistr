@@ -36,7 +36,11 @@ Log.Logger = new LoggerConfiguration()
         retainedFileCountLimit: 90)
     .CreateLogger();
 
-try
+// Fijar el puerto - Escuchar en TODAS las interfaces de red (0.0.0.0)
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+// Configurar PostgreSQL como TRANSIENT
+builder.Services.AddTransient<ApplicationDbContext>(provider =>
 {
     Log.Information("=== Iniciando Servicio SOAP de Inventario Ferretería ===");
 
