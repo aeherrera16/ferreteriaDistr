@@ -1,0 +1,18 @@
+<div class="container mt-4">
+  <h2>Nueva Categoría</h2>
+  <% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+  <form method="post" action="/categorias/crear">
+    <div class="mb-3">
+      <label>Nombre</label>
+      <input type="text" name="nombre" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label>Descripción</label>
+      <textarea name="descripcion" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear</button>
+    <a href="/categorias" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

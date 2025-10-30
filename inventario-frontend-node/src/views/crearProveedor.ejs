@@ -1,0 +1,26 @@
+<div class="container mt-4">
+  <h2>Nuevo Proveedor</h2>
+  <% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+  <form method="post" action="/proveedores/crear">
+    <div class="mb-3">
+      <label>Nombre</label>
+      <input type="text" name="nombre" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label>Teléfono</label>
+      <input type="text" name="telefono" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label>Email</label>
+      <input type="email" name="email" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label>Dirección</label>
+      <textarea name="direccion" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear</button>
+    <a href="/proveedores" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>

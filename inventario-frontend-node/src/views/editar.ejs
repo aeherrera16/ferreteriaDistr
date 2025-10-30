@@ -1,5 +1,5 @@
 <div class="card p-4 shadow-sm">
-  <h2 class="mb-4">Registrar Artículo</h2>
+  <h2 class="mb-4">Editar Artículo</h2>
 
   <% if (serverMsg) { %>
   <div
@@ -9,7 +9,7 @@
   </div>
   <% } %>
 
-  <form method="post" action="/articulos/crear">
+  <form method="post" action="/articulos/<%= id %>/editar">
     <div class="row g-3">
       <div class="col-md-4">
         <label class="form-label">Código</label>
@@ -96,7 +96,7 @@
       </div>
 
       <div class="col-12 text-end mt-2">
-        <button class="btn btn-primary">Guardar</button>
+        <button class="btn btn-primary">Actualizar</button>
       </div>
     </div>
   </form>

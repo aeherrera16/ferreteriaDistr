@@ -1,0 +1,102 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🧰 Artículos</h2>
+    <div>
+      <a href="/articulos/crear" class="btn btn-primary">➕ Nuevo Artículo</a>
+    </div>
+  </div>
+  <!-- Formulario rápido de búsqueda integrado (RF4) -->
+  <div class="card mb-3 p-3">
+    <form
+      id="search-form"
+      method="post"
+      action="/articulos/consultar"
+      class="row g-2 align-items-center"
+    >
+      <div class="col-auto">
+        <label class="form-label mb-0">Buscar por</label>
+        <select class="form-select" id="tipo-busqueda-top" name="tipoBusqueda">
+          <option value="codigo">Código</option>
+          <option value="nombre">Nombre</option>
+        </select>
+      </div>
+      <div class="col-auto" id="input-codigo-top">
+        <label class="form-label mb-0">Código</label>
+        <input class="form-control" name="codigo" autocomplete="off" />
+      </div>
+      <div class="col-auto" id="input-nombre-top" style="display: none">
+        <label class="form-label mb-0">Nombre</label>
+        <input class="form-control" name="nombre" autocomplete="off" />
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-outline-secondary mt-2" type="submit">
+          Buscar
+        </button>
+      </div>
+    </form>
+  </div>
+  <% if (error) { %>
+  <div class="alert alert-danger"><%= error %></div>
+  <% } %>
+  <table class="table table-hover shadow-sm">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Proveedor</th>
+        <th>Stock</th>
+        <th>Precio Venta</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% articulos.forEach(a => { %>
+      <tr>
+        <td><strong><%= a.codigo %></strong></td>
+        <td><%= a.nombre %></td>
+        <td>
+          <span class="badge bg-secondary"><%= a.categoria || '-' %></span>
+        </td>
+        <td><%= a.proveedor || '-' %></td>
+        <td>
+          <% if (a.stock > (a.stockminimo || 0)) { %>
+          <span class="badge stock-badge stock-high"><%= a.stock %> ✓</span>
+          <% } else if (a.stock == 0) { %>
+          <span class="badge stock-badge stock-out">0 ✖</span>
+          <% } else { %>
+          <span class="badge stock-badge stock-low"><%= a.stock %> ⚠</span>
+          <% } %>
+        </td>
+        <td>$<%= Number(a.precioventa).toFixed(2) %></td>
+        <td>
+          <a
+            href="/articulos/<%= a.id %>/editar"
+            class="btn btn-sm btn-outline-primary"
+            >✏️ Editar</a
+          >
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Toggle inputs en el formulario de búsqueda integrado
+  (function () {
+    const tipo = document.getElementById("tipo-busqueda-top");
+    const inputCodigo = document.getElementById("input-codigo-top");
+    const inputNombre = document.getElementById("input-nombre-top");
+    if (!tipo) return;
+    tipo.addEventListener("change", function () {
+      if (this.value === "codigo") {
+        inputCodigo.style.display = "";
+        inputNombre.style.display = "none";
+      } else {
+        inputCodigo.style.display = "none";
+        inputNombre.style.display = "";
+      }
+    });
+  })();
+</script>

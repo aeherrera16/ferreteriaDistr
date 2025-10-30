@@ -1,3 +1,47 @@
+// --- Categorías ---
+
+export async function obtenerCategorias(token) {
+  const client = await soap.createClientAsync(WSDL);
+  const [result] = await client.ObtenerTodasCategoriasAsync({ token });
+  const datos = result?.ObtenerTodasCategoriasResult?.Datos;
+  let lista = [];
+  if (datos) {
+    if (Array.isArray(datos.Categoria)) {
+      lista = datos.Categoria;
+    } else if (datos.Categoria) {
+      lista = [datos.Categoria];
+    }
+  }
+  return lista;
+}
+
+export async function crearCategoria(data) {
+  // TODO: Llamar al método SOAP real para crear categoría
+  // Simulación: no hacer nada
+  return true;
+}
+
+// --- Proveedores ---
+
+export async function obtenerProveedores(token) {
+  const client = await soap.createClientAsync(WSDL);
+  const [result] = await client.ObtenerTodosProveedoresAsync({ token });
+  const datos = result?.ObtenerTodosProveedoresResult?.Datos;
+  let lista = [];
+  if (datos) {
+    if (Array.isArray(datos.Proveedor)) {
+      lista = datos.Proveedor;
+    } else if (datos.Proveedor) {
+      lista = [datos.Proveedor];
+    }
+  }
+  return lista;
+}
+
+export async function crearProveedor(data) {
+  // TODO: Llamar al método SOAP real para crear proveedor
+  return true;
+}
 // Autenticación SOAP: devuelve el token si es exitoso
 export async function autenticarSoap(nombreUsuario, password) {
   const client = await soap.createClientAsync(WSDL);
@@ -88,4 +132,25 @@ export async function consultarPorNombre(nombre, token) {
     encontrado = lista.find(a => a.Nombre && a.Nombre.toLowerCase().includes(nombreLower));
   }
   return encontrado || null;
+}
+
+// Actualizar artículo por id
+export async function actualizarArticulo(id, dto, token) {
+  const client = await soap.createClientAsync(WSDL);
+  // Construir objeto Articulo esperado por el servicio
+  const articuloObj = {
+    id: Number(id),
+    codigo: dto.Codigo,
+    nombre: dto.Nombre,
+    descripcion: dto.Descripcion,
+    categoriaId: dto.Categoria ? Number(dto.Categoria) : null,
+    precioCompra: dto.PrecioCompra,
+    precioVenta: dto.PrecioVenta,
+    stock: dto.Stock,
+    stockMinimo: dto.StockMinimo,
+    proveedorId: dto.Proveedor ? Number(dto.Proveedor) : null
+  };
+  // Llamada SOAP: ActualizarArticuloAsync espera (token, id, articulo) según contrato
+  const [result] = await client.ActualizarArticuloAsync({ token, id: Number(id), articulo: articuloObj });
+  return result?.ActualizarArticuloResult;
 }

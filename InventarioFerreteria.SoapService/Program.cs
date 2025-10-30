@@ -16,8 +16,8 @@ using Serilog.Events;
 // ============================================
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)  // ✅ CORREGIDO
-    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)  // ✅ CORREGIDO
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Application", "InventarioFerreteria.SoapService")
     .WriteTo.Console(
@@ -48,10 +48,10 @@ try
     builder.Host.UseSerilog();
 
     // ============================================
-    // FIJAR EL PUERTO
+    // FIJAR EL PUERTO - Escuchar en todas las interfaces
     // ============================================
-    builder.WebHost.UseUrls("http://localhost:5000");
-    Log.Information("Servicio configurado en: http://localhost:5000");
+    builder.WebHost.UseUrls("http://0.0.0.0:5000");
+    Log.Information("Servicio configurado en: http://0.0.0.0:5000");
 
     // ============================================
     // CONFIGURAR POSTGRESQL COMO TRANSIENT
@@ -151,7 +151,7 @@ try
     {
         WriteEncoding = System.Text.Encoding.UTF8
     });
-    Log.Information("✓ Endpoint SOAP configurado en: http://localhost:5000/InventarioService.asmx");
+    Log.Information("✓ Endpoint SOAP configurado en: http://0.0.0.0:5000/InventarioService.asmx");
 
     // ============================================
     // PÁGINA DE BIENVENIDA
@@ -184,7 +184,7 @@ try
     });
 
     Log.Information("=== Servicio SOAP listo para recibir peticiones ===");
-    Log.Information("WSDL disponible en: http://localhost:5000/InventarioService.asmx?wsdl");
+    Log.Information("WSDL disponible en: http://0.0.0.0:5000/InventarioService.asmx?wsdl");
 
     await app.RunAsync();
 }

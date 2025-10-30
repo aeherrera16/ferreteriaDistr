@@ -39,9 +39,67 @@
 </script>
 <% if (error) { %>
 <p style="color: red"><%= error %></p>
-<% } %> <% if (articulo) { %>
+<% } %> <% if (articulo) { %> <% /* normalizar nombres comunes (soporta tanto
+"Stock" como "stock", etc.) */ %> <% const a = articulo; %> <% const stock =
+(a.Stock !== undefined) ? a.Stock : (a.stock !== undefined ? a.stock : 0); %> <%
+const stockMin = (a.StockMinimo !== undefined) ? a.StockMinimo : (a.stockMinimo
+!== undefined ? a.stockMinimo : 0); %> <% const precioCompra = (a.PrecioCompra
+!== undefined) ? a.PrecioCompra : (a.precioCompra !== undefined ? a.precioCompra
+: 0); %> <% const precioVenta = (a.PrecioVenta !== undefined) ? a.PrecioVenta :
+(a.precioVenta !== undefined ? a.precioVenta : 0); %>
 <h3>Resultado</h3>
-<pre><%= JSON.stringify(articulo, null, 2) %></pre>
-<% if (articulo.Stock < articulo.StockMinimo) { %>
-<p style="color: orange">⚠ Stock bajo el mínimo</p>
-<% } %> <% } %>
+
+<div class="card mb-3" style="max-width: 900px">
+  <div class="card-body">
+    <h4 class="card-title">
+      <%= a.Nombre ?? a.nombre ?? '—' %>
+      <small class="text-muted">(<%= a.Codigo ?? a.codigo ?? '—' %>)</small>
+    </h4>
+    <% if (a.Descripcion || a.descripcion) { %>
+    <p class="card-text"><%= a.Descripcion ?? a.descripcion %></p>
+    <% } %>
+
+    <ul class="list-unstyled mb-2">
+      <li>
+        <strong>Categoría:</strong> <%= a.CategoriaNombre ?? a.Categoria ??
+        a.categoria ?? '—' %>
+      </li>
+      <li>
+        <strong>Proveedor:</strong> <%= a.ProveedorId ?? a.proveedorId ?? '—' %>
+      </li>
+      <li>
+        <strong>Precio compra:</strong> S/ <%= Number(precioCompra).toFixed(2)
+        %>
+      </li>
+      <li>
+        <strong>Precio venta:</strong> S/ <%= Number(precioVenta).toFixed(2) %>
+      </li>
+      <li><strong>Stock:</strong> <%= stock %> (mínimo <%= stockMin %>)</li>
+      <li>
+        <strong>Activo:</strong> <%= (a.Activo === false || a.activo === false)
+        ? 'No' : 'Sí' %>
+      </li>
+      <li>
+        <strong>Creado:</strong> <%= a.FechaCreacion ? new
+        Date(a.FechaCreacion).toLocaleString() : (a.fechaCreacion ? new
+        Date(a.fechaCreacion).toLocaleString() : '—') %>
+      </li>
+      <li>
+        <strong>Última actualización:</strong> <%= a.FechaActualizacion ? new
+        Date(a.FechaActualizacion).toLocaleString() : (a.fechaActualizacion ?
+        new Date(a.fechaActualizacion).toLocaleString() : '—') %>
+      </li>
+    </ul>
+
+    <% if (Number(stock) < Number(stockMin)) { %>
+    <div class="alert alert-warning">⚠ Stock bajo el mínimo</div>
+    <% } %>
+
+    <details>
+      <summary>Mostrar JSON crudo</summary>
+      <pre style="white-space: pre-wrap"><%= JSON.stringify(a, null, 2) %></pre>
+    </details>
+  </div>
+</div>
+
+<% } %>
