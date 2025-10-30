@@ -34,12 +34,12 @@ Sistema de control de inventario para una ferretería que implementa:
 
 ### Funcionalidades Principales
 
- **RF1-RF4:** Gestión completa de artículos (registrar, consultar, actualizar)  
+**RF1-RF4:** Gestión completa de artículos (registrar, consultar, actualizar)  
  **RF5-RF6:** Servicios SOAP para insertar y consultar artículos  
  **RF7:** Control de stock con alertas de reposición  
  **RF8:** Persistencia en PostgreSQL  
  **RF9:** Interfaz de usuario (consola)  
- **RF10:** Manejo robusto de errores con SOAP Faults  
+ **RF10:** Manejo robusto de errores con SOAP Faults
 
 ---
 
@@ -101,11 +101,11 @@ Sistema de control de inventario para una ferretería que implementa:
 
 ## ?? Equipo de Desarrollo
 
-| Miembro | Rol Principal | Responsabilidades |
-|---------|---------------|-------------------|
-| **Anahy Herrera** | Análisis y Base de Datos | • Documento ERS (Especificación de Requisitos)<br>• Documento DDA (Diseño Arquitectónico)<br>• Diseño y scripts de base de datos<br>• Diagramas UML (Casos de Uso, Clases, Secuencia, ER)<br>• Evidencias de pruebas<br>• Informe final |
-| **Oscar [Apellido]** | Backend y Servicios | • Capa de Negocio (Business)<br>• Capa de Datos (DataAccess)<br>• Servicios SOAP (SoapService)<br>• Pruebas unitarias e integración<br>• Logs y manejo de errores |
-| **Camila [Apellido]** | Frontend y DevOps | • Cliente de consola<br>• Interfaz de usuario<br>• Configuración CI/CD<br>• Manual de despliegue<br>• README y guías<br>• Presentación final |
+| Miembro               | Rol Principal            | Responsabilidades                                                                                                                                                                                                                       |
+| --------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anahy Herrera**     | Análisis y Base de Datos | • Documento ERS (Especificación de Requisitos)<br>• Documento DDA (Diseño Arquitectónico)<br>• Diseño y scripts de base de datos<br>• Diagramas UML (Casos de Uso, Clases, Secuencia, ER)<br>• Evidencias de pruebas<br>• Informe final |
+| **Oscar [Apellido]**  | Backend y Servicios      | • Capa de Negocio (Business)<br>• Capa de Datos (DataAccess)<br>• Servicios SOAP (SoapService)<br>• Pruebas unitarias e integración<br>• Logs y manejo de errores                                                                       |
+| **Camila [Apellido]** | Frontend y DevOps        | • Cliente de consola<br>• Interfaz de usuario<br>• Configuración CI/CD<br>• Manual de despliegue<br>• README y guías<br>• Presentación final                                                                                            |
 
 ---
 
@@ -179,6 +179,7 @@ dotnet restore
 Las contraseñas en la base de datos deben estar hasheadas con BCrypt.
 
 **Opción 1: Script SQL Automatizado**
+
 ```sql
 -- Ejecutar en Query Tool de pgAdmin:
 -- docs/Scripts-SQL/02-hash-passwords.sql
@@ -195,6 +196,7 @@ dotnet add package BCrypt.Net-Next
 ```
 
 Editar `Program.cs`:
+
 ```csharp
 using BCrypt.Net;
 
@@ -209,11 +211,13 @@ Console.WriteLine($"Usuario: {usuarioHash}");
 ```
 
 Ejecutar y copiar los hashes:
+
 ```bash
 dotnet run
 ```
 
 Actualizar en pgAdmin:
+
 ```sql
 UPDATE usuarios SET passwordhash = 'HASH_ADMIN_AQUI' WHERE nombreusuario = 'admin';
 UPDATE usuarios SET passwordhash = 'HASH_USUARIO_AQUI' WHERE nombreusuario = 'usuario';
@@ -238,6 +242,7 @@ Editar `InventarioFerreteria.SoapService/appsettings.json`:
 ## ?? Ejecución del Sistema
 
 El sistema requiere ejecutar **2 proyectos simultáneamente:**
+
 1. **Servidor SOAP** (InventarioFerreteria.SoapService)
 2. **Cliente** (InventarioFerreteria.Client)
 
@@ -249,33 +254,37 @@ El sistema requiere ejecutar **2 proyectos simultáneamente:**
 4. Elegir **"Varios proyectos de inicio"** / **"Multiple startup projects"**
 5. Configurar:
 
-   | Proyecto | Acción |
-   |----------|--------|
+   | Proyecto                         | Acción      |
+   | -------------------------------- | ----------- |
    | InventarioFerreteria.SoapService | **Iniciar** |
-   | InventarioFerreteria.Client | **Iniciar** |
-   | (resto de proyectos) | Ninguno |
+   | InventarioFerreteria.Client      | **Iniciar** |
+   | (resto de proyectos)             | Ninguno     |
 
 6. Click **"Aceptar"**
 7. Presionar **F5** o click en ?? **Iniciar**
 
 **Resultado:** Se abrirán 2 ventanas:
+
 - Terminal del servidor SOAP (puerto 5233)
 - Terminal del cliente (menú interactivo)
 
 ### Opción 2: Línea de Comandos (2 Terminales)
 
 **Terminal 1 - Servidor SOAP:**
+
 ```bash
 cd InventarioFerreteria.SoapService
 dotnet run
 ```
 
 Esperar a ver:
+
 ```
 Now listening on: http://localhost:5233
 ```
 
 **Terminal 2 - Cliente:**
+
 ```bash
 cd InventarioFerreteria.Client
 dotnet run
@@ -327,6 +336,7 @@ Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Credenciales disponibles:**
+
 - **Administrador:** usuario: `admin` / contraseña: `Admin123!`
 - **Usuario:** usuario: `usuario` / contraseña: `Usuario123!`
 
@@ -353,6 +363,7 @@ Nombre: Martillo Prueba
 ```
 
 **Validaciones automáticas:**
+
 - Código único (no duplicados)
 - Precio venta > Precio compra
 - Stock ? 0
@@ -392,15 +403,15 @@ PINT-001        Pintura Látex Blanco 1GL          50        $22.50
 
 ### Backend
 
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| .NET | 9.0 | Framework principal |
-| ASP.NET Core | 9.0 | Servidor web |
-| Entity Framework Core | 9.0 | ORM para base de datos |
-| SoapCore | 1.1.0.50 | Implementación de servicios SOAP |
-| Npgsql | 9.0.0 | Driver PostgreSQL |
-| BCrypt.Net-Next | 4.0.3 | Hashing de contraseñas |
-| System.IdentityModel.Tokens.Jwt | 8.2.1 | Autenticación JWT |
+| Tecnología                      | Versión  | Propósito                        |
+| ------------------------------- | -------- | -------------------------------- |
+| .NET                            | 9.0      | Framework principal              |
+| ASP.NET Core                    | 9.0      | Servidor web                     |
+| Entity Framework Core           | 9.0      | ORM para base de datos           |
+| SoapCore                        | 1.1.0.50 | Implementación de servicios SOAP |
+| Npgsql                          | 9.0.0    | Driver PostgreSQL                |
+| BCrypt.Net-Next                 | 4.0.3    | Hashing de contraseñas           |
+| System.IdentityModel.Tokens.Jwt | 8.2.1    | Autenticación JWT                |
 
 ### Base de Datos
 
@@ -485,6 +496,7 @@ InventarioFerreteria/
 #### Tablas Principales
 
 **1. usuarios**
+
 ```sql
 - id (PK, serial)
 - nombreusuario (varchar(50), unique)
@@ -495,6 +507,7 @@ InventarioFerreteria/
 ```
 
 **2. articulos**
+
 ```sql
 - id (PK, serial)
 - codigo (varchar(50), unique)
@@ -512,6 +525,7 @@ InventarioFerreteria/
 ```
 
 **3. categorias**
+
 ```sql
 - id (PK, serial)
 - nombre (varchar(100))
@@ -519,6 +533,7 @@ InventarioFerreteria/
 ```
 
 **4. proveedores**
+
 ```sql
 - id (PK, serial)
 - nombre (varchar(150))
@@ -528,6 +543,7 @@ InventarioFerreteria/
 ```
 
 **5. logoperaciones** (Auditoría)
+
 ```sql
 - id (PK, serial)
 - operacion (varchar(50))
@@ -569,10 +585,12 @@ CREATE INDEX idx_articulos_activo ON articulos(activo);
 Ver script completo en: `docs/Scripts-SQL/01-create-schema.sql`
 
 **Usuarios:**
+
 - `admin` / `Admin123!` (Administrador)
 - `usuario` / `Usuario123!` (Usuario)
 
 **Categorías:**
+
 1. Herramientas Manuales
 2. Herramientas Eléctricas
 3. Materiales de Construcción
@@ -581,11 +599,13 @@ Ver script completo en: `docs/Scripts-SQL/01-create-schema.sql`
 6. Electricidad
 
 **Proveedores:**
+
 1. Ferretería Total S.A.
 2. Distribuidora El Tornillo
 3. Importadora HerramientasPlus
 
 **Artículos de ejemplo:**
+
 - MART-001: Martillo de Uña 16oz ($15.00)
 - TALAD-001: Taladro Eléctrico 500W ($89.99)
 - PINT-001: Pintura Látex Blanco 1GL ($22.50)
@@ -612,6 +632,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ### Operaciones Disponibles
 
 #### 1. Autenticar
+
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -624,6 +645,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ```
 
 **Respuesta exitosa:**
+
 ```xml
 <Autenticar Response>
   <AutenticarResult>
@@ -635,6 +657,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ```
 
 #### 2. InsertarArticulo
+
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -655,6 +678,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ```
 
 #### 3. ConsultarArticuloPorCodigo
+
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -667,6 +691,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ```
 
 #### 4. ObtenerTodosArticulos
+
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
@@ -698,11 +723,11 @@ http://localhost:5233/InventarioService.asmx?wsdl
 
 ### Documentos Disponibles
 
-| Documento | Ubicación | Responsable | Descripción |
-|-----------|-----------|-------------|-------------|
-| **ERS** | `docs/01-ERS/ERS_InventarioFerreteria.md` | Anahy | Especificación de Requisitos del Sistema<br>• Casos de uso<br>• Requerimientos funcionales y no funcionales<br>• Modelo de dominio |
-| **DDA** | `docs/02-DDA/DDA_InventarioFerreteria.md` | Anahy | Documento de Diseño Arquitectónico<br>• Arquitectura N-Capas<br>• Diagramas de clases y secuencia<br>• Modelo de base de datos<br>• Definición WSDL/XSD |
-| **Scripts SQL** | `docs/Scripts-SQL/` | Anahy | • 01-create-schema.sql (Creación de BD)<br>• 02-hash-passwords.sql (Hasheo de contraseñas) |
+| Documento       | Ubicación                                 | Responsable | Descripción                                                                                                                                             |
+| --------------- | ----------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ERS**         | `docs/01-ERS/ERS_InventarioFerreteria.md` | Anahy       | Especificación de Requisitos del Sistema<br>• Casos de uso<br>• Requerimientos funcionales y no funcionales<br>• Modelo de dominio                      |
+| **DDA**         | `docs/02-DDA/DDA_InventarioFerreteria.md` | Anahy       | Documento de Diseño Arquitectónico<br>• Arquitectura N-Capas<br>• Diagramas de clases y secuencia<br>• Modelo de base de datos<br>• Definición WSDL/XSD |
+| **Scripts SQL** | `docs/Scripts-SQL/`                       | Anahy       | • 01-create-schema.sql (Creación de BD)<br>• 02-hash-passwords.sql (Hasheo de contraseñas)                                                              |
 
 ### Diagramas
 
@@ -725,6 +750,7 @@ Los diagramas se encuentran documentados en los archivos ERS y DDA:
 ### Problema 1: No se puede conectar a PostgreSQL
 
 **Síntomas:**
+
 ```
 Npgsql.NpgsqlException: Failed to connect to localhost:5432
 ```
@@ -732,15 +758,18 @@ Npgsql.NpgsqlException: Failed to connect to localhost:5432
 **Soluciones:**
 
 1. **Verificar que PostgreSQL esté ejecutándose:**
+
    - Windows: Buscar "services.msc" ? Buscar "PostgreSQL" ? Verificar que esté "Running"
    - Linux: `sudo systemctl status postgresql`
 
 2. **Verificar credenciales en appsettings.json:**
+
    ```json
    "DefaultConnection": "Host=localhost;Port=5432;Database=ferreteria;Username=postgres;Password=TU_PASSWORD"
    ```
 
 3. **Verificar que la base de datos exista:**
+
    ```sql
    -- En pgAdmin Query Tool:
    SELECT datname FROM pg_database WHERE datname = 'ferreteria';
@@ -754,6 +783,7 @@ Npgsql.NpgsqlException: Failed to connect to localhost:5432
 ### Problema 2: Error de autenticación ("Token inválido")
 
 **Síntomas:**
+
 ```
 ? Token inválido o expirado
 ```
@@ -761,21 +791,23 @@ Npgsql.NpgsqlException: Failed to connect to localhost:5432
 **Causas comunes:**
 
 1. **Las contraseñas NO están hasheadas con BCrypt**
-   
+
    **Solución:** Ejecutar el script de hasheo:
+
    ```sql
    -- En pgAdmin:
    -- Abrir y ejecutar: docs/Scripts-SQL/02-hash-passwords.sql
    ```
 
 2. **Contraseña incorrecta**
-   
+
    **Credenciales correctas:**
+
    - admin / Admin123!
    - usuario / Usuario123!
 
 3. **Token expirado** (después de 8 horas)
-   
+
    **Solución:** Volver a autenticarse (Opción 1 del menú)
 
 ---
@@ -783,6 +815,7 @@ Npgsql.NpgsqlException: Failed to connect to localhost:5432
 ### Problema 3: El servidor no inicia
 
 **Síntomas:**
+
 ```
 Failed to bind to address http://localhost:5233
 ```
@@ -790,22 +823,25 @@ Failed to bind to address http://localhost:5233
 **Soluciones:**
 
 1. **Puerto 5233 ocupado:**
+
    ```bash
    # Windows
    netstat -ano | findstr :5233
-   
+
    # Matar el proceso
    taskkill /PID [PID_NUMBER] /F
    ```
 
 2. **Cambiar el puerto:**
-   
+
    Editar `InventarioFerreteria.SoapService/Properties/launchSettings.json`:
+
    ```json
    "applicationUrl": "http://localhost:5234"
    ```
-   
+
    **Nota:** También cambiar en el cliente (Program.cs):
+
    ```csharp
    private const string ServiceUrl = "http://localhost:5234/InventarioService.asmx";
    ```
@@ -815,6 +851,7 @@ Failed to bind to address http://localhost:5233
 ### Problema 4: Error al insertar artículo
 
 **Síntomas:**
+
 ```
 ? Error: Código de artículo ya existe
 ```
@@ -822,12 +859,15 @@ Failed to bind to address http://localhost:5233
 **Causas:**
 
 1. **Código duplicado** (validación correcta)
+
    - Usar un código diferente
 
 2. **Precio venta < Precio compra**
+
    ```
    ? Error: El precio de venta debe ser mayor al precio de compra
    ```
+
    - Ajustar los precios
 
 3. **Categoría o Proveedor inexistente**
@@ -866,6 +906,7 @@ Failed to bind to address http://localhost:5233
 ### Problema 6: Error de compilación
 
 **Síntomas:**
+
 ```
 Error CS0246: The type or namespace name 'X' could not be found
 ```
@@ -873,11 +914,13 @@ Error CS0246: The type or namespace name 'X' could not be found
 **Soluciones:**
 
 1. **Restaurar paquetes NuGet:**
+
    ```bash
    dotnet restore
    ```
 
 2. **Limpiar y reconstruir:**
+
    ```bash
    dotnet clean
    dotnet build
@@ -896,6 +939,7 @@ Error CS0246: The type or namespace name 'X' could not be found
 **Ver logs del servidor:**
 
 Los logs aparecen en la consola del servidor:
+
 ```
 info: Microsoft.Hosting.Lifetime[14]
       Now listening on: http://localhost:5233
@@ -906,11 +950,12 @@ info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
 **Nivel de logs:**
 
 Editar `appsettings.json`:
+
 ```json
 {
   "Logging": {
     "LogLevel": {
-      "Default": "Debug",  // Cambiar a Debug para más detalle
+      "Default": "Debug", // Cambiar a Debug para más detalle
       "Microsoft.AspNetCore": "Warning"
     }
   }
@@ -924,53 +969,64 @@ Editar `appsettings.json`:
 ### Pruebas Funcionales (Manual)
 
 #### Test 1: Autenticación Exitosa
+
 1. Ejecutar cliente
 2. Seleccionar opción 1
 3. Ingresar: admin / Admin123!
 4. **Esperado:** ? Token recibido
 
 #### Test 2: Autenticación Fallida
+
 1. Ingresar usuario o contraseña incorrecta
 2. **Esperado:** ? "Credenciales inválidas"
 
 #### Test 3: Insertar Artículo Válido
+
 1. Autenticarse
 2. Opción 2
 3. Ingresar datos válidos (código único, precios coherentes)
 4. **Esperado:** ? Artículo insertado
 
 #### Test 4: Código Duplicado
+
 1. Insertar artículo con código existente (ej. MART-001)
 2. **Esperado:** ? Error de validación
 
 #### Test 5: Precios Inválidos
+
 1. Intentar: Precio compra > Precio venta
 2. **Esperado:** ? Error de validación
 
 #### Test 6: Consultar Artículo Existente
+
 1. Opción 3, código: MART-001
 2. **Esperado:** ? Detalles del artículo
 
 #### Test 7: Consultar Artículo Inexistente
+
 1. Opción 3, código: NOEXISTE
 2. **Esperado:** ? "Artículo no encontrado"
 
 #### Test 8: Listar Artículos
+
 1. Opción 4
 2. **Esperado:** ? Tabla con todos los artículos
 
 #### Test 9: Alerta de Stock Bajo
+
 1. Consultar artículo con stock < stock mínimo
 2. **Esperado:** ?? Indicador de reposición
 
 ### Pruebas con SoapUI
 
 1. **Importar WSDL:**
+
    ```
    http://localhost:5233/InventarioService.asmx?wsdl
    ```
 
 2. **Crear TestSuite:**
+
    - Test: Autenticación
    - Test: Insertar artículo
    - Test: Consultar artículo
@@ -986,33 +1042,116 @@ Editar `appsettings.json`:
 
 ### Requerimientos Funcionales
 
-| ID | Requerimiento | Estado |
-|----|---------------|--------|
-| RF1 | Gestión de artículos | ? Implementado |
-| RF2 | Registro de nuevo artículo | ? Implementado |
-| RF3 | Validación de datos | ? Implementado |
-| RF4 | Consulta de artículos | ? Implementado |
-| RF5 | Servicio SOAP: insertar artículo | ? Implementado |
-| RF6 | Servicio SOAP: consultar artículo | ? Implementado |
-| RF7 | Manejo de stock | ? Implementado |
-| RF8 | Persistencia de datos | ? PostgreSQL |
-| RF9 | Interfaz de usuario | ? Cliente consola |
-| RF10 | Manejo de errores | ? SOAP Faults |
+| ID   | Requerimiento                     | Estado            |
+| ---- | --------------------------------- | ----------------- |
+| RF1  | Gestión de artículos              | ? Implementado    |
+| RF2  | Registro de nuevo artículo        | ? Implementado    |
+| RF3  | Validación de datos               | ? Implementado    |
+| RF4  | Consulta de artículos             | ? Implementado    |
+| RF5  | Servicio SOAP: insertar artículo  | ? Implementado    |
+| RF6  | Servicio SOAP: consultar artículo | ? Implementado    |
+| RF7  | Manejo de stock                   | ? Implementado    |
+| RF8  | Persistencia de datos             | ? PostgreSQL      |
+| RF9  | Interfaz de usuario               | ? Cliente consola |
+| RF10 | Manejo de errores                 | ? SOAP Faults     |
 
 ### Requerimientos No Funcionales
 
-| ID | Requerimiento | Estado |
-|----|---------------|--------|
-| RNF1 | Arquitectura N-Capas | ? 5 proyectos separados |
-| RNF2 | Rendimiento ? 500ms | ? Optimizado |
-| RNF3 | Escalabilidad | ? Modular |
-| RNF4 | Mantenibilidad | ? SOLID, código limpio |
-| RNF5 | Interoperabilidad SOAP | ? WSDL 1.1 |
-| RNF6 | Seguridad básica | ? JWT + BCrypt |
-| RNF7 | Confiabilidad | ? Logs y excepciones |
-| RNF8 | Usabilidad | ? Mensajes claros |
-| RNF9 | Portabilidad | ? Windows/Linux |
-| RNF10 | Pruebas | ? Unitarias + integración |
+| ID    | Requerimiento          | Estado                    |
+| ----- | ---------------------- | ------------------------- |
+| RNF1  | Arquitectura N-Capas   | ? 5 proyectos separados   |
+| RNF2  | Rendimiento ? 500ms    | ? Optimizado              |
+| RNF3  | Escalabilidad          | ? Modular                 |
+| RNF4  | Mantenibilidad         | ? SOLID, código limpio    |
+| RNF5  | Interoperabilidad SOAP | ? WSDL 1.1                |
+| RNF6  | Seguridad básica       | ? JWT + BCrypt            |
+| RNF7  | Confiabilidad          | ? Logs y excepciones      |
+| RNF8  | Usabilidad             | ? Mensajes claros         |
+| RNF9  | Portabilidad           | ? Windows/Linux           |
+| RNF10 | Pruebas                | ? Unitarias + integración |
+
+---
+
+## 🌐 Interfaz Web Node.js/EJS (Frontend)
+
+Desde 2024, el sistema cuenta con una interfaz web moderna desarrollada en **Node.js** y **EJS** (Express + plantillas), que permite consultar artículos por código o nombre, visualizar listados y mejorar la experiencia de usuario respecto al cliente de consola.
+
+### Tecnologías y Dependencias
+
+| Tecnología      | Versión | Propósito                       |
+| --------------- | ------- | ------------------------------- |
+| Node.js         | 18+     | Entorno de ejecución JavaScript |
+| Express         | ^4      | Framework web backend           |
+| EJS             | ^3      | Motor de plantillas HTML        |
+| express-session | ^1      | Manejo de sesiones              |
+| dotenv          | ^16     | Variables de entorno            |
+| body-parser     | ^1      | Parseo de formularios           |
+| joi             | ^17     | Validación de datos             |
+| pg              | ^8      | Conexión a PostgreSQL           |
+| soap            | ^0.44   | Cliente SOAP para Node.js       |
+
+### Estructura del Frontend
+
+```
+src/
+├── app.js                 # App principal Express
+├── routes/
+│   └── articulos.routes.js # Rutas para artículos (búsqueda, listado)
+├── soapClient.js          # Cliente SOAP (con manejo robusto de respuestas)
+├── views/
+│   ├── consultar.ejs      # Vista de búsqueda de artículos (código/nombre)
+│   └── ...                # Otras vistas EJS
+├── public/                # Archivos estáticos (CSS, JS, imágenes)
+├── ...                    # Otros módulos y configuraciones
+```
+
+### Instalación y Ejecución del Frontend
+
+1. **Requisitos previos:**
+
+- Node.js 18+
+- Acceso al backend SOAP corriendo (ver instrucciones previas)
+
+2. **Instalar dependencias:**
+
+```bash
+cd src
+npm install
+```
+
+3. **Configurar variables de entorno:**
+
+- Crear un archivo `.env` en `src/` con el endpoint SOAP y otros parámetros:
+  ```env
+  SOAP_URL=http://localhost:5233/InventarioService.asmx?wsdl
+  # Otros parámetros según sea necesario
+  ```
+
+4. **Ejecutar el servidor web:**
+
+```bash
+npm start
+# o
+node app.js
+```
+
+5. **Acceder a la interfaz:**
+
+- Abrir navegador en: [http://localhost:3000](http://localhost:3000)
+
+### Funcionalidades Web
+
+- Buscar artículos por **código** o **nombre** (con selector tipo combo box)
+- Listar todos los artículos
+- Validaciones robustas en formularios
+- Manejo de sesiones y mensajes de error claros
+- Interfaz moderna y responsiva (EJS + CSS)
+
+### Notas Técnicas
+
+- El frontend se comunica exclusivamente con el backend SOAP, no accede directamente a la base de datos.
+- El cliente SOAP en Node.js está preparado para manejar respuestas donde la lista de artículos puede venir como array o como objeto único.
+- El código fuente del frontend se encuentra en la carpeta `src/`.
 
 ---
 
@@ -1057,6 +1196,7 @@ Editar `appsettings.json`:
 ### Issues y Bugs
 
 Para reportar problemas o solicitar funcionalidades:
+
 1. Ir a la sección **Issues** del repositorio
 2. Click en **New Issue**
 3. Describir el problema con detalles
@@ -1070,7 +1210,7 @@ Este proyecto es de carácter académico desarrollado para la asignatura de [Nom
 
 **Institución:** [Nombre de la Universidad]  
 **Profesor:** [Nombre del Profesor]  
-**Fecha:** Octubre 2025  
+**Fecha:** Octubre 2025
 
 ---
 
@@ -1101,4 +1241,4 @@ Este proyecto es de carácter académico desarrollado para la asignatura de [Nom
 
 **¡Sistema listo para usar! ??**
 
-*Última actualización: Octubre 2025*
+_Última actualización: Octubre 2025_

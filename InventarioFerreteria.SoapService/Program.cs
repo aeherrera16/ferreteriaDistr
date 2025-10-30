@@ -1,12 +1,21 @@
-// InventarioFerreteria.Client/Program.cs
-using System.Net.Http;
-using System.Text;
-using System.Xml.Linq;
-using System.Globalization;
+// InventarioFerreteria.SoapService/Program.cs
+using Microsoft.EntityFrameworkCore;
+using SoapCore;
+using InventarioFerreteria.DataAccess;
+using InventarioFerreteria.DataAccess.Interfaces;
+using InventarioFerreteria.DataAccess.Repositories;
+using InventarioFerreteria.Business.Interfaces;
+using InventarioFerreteria.Business.Services;
+using InventarioFerreteria.SoapService.Services;
 
-namespace InventarioFerreteria.Client;
+var builder = WebApplication.CreateBuilder(args);
 
-class Program
+// Fijar el puerto y escuchar en todas las interfaces para permitir conexiones desde la red
+// En desarrollo esto es útil; en producción debe usarse un reverse-proxy y reglas de firewall adecuadas
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+
+// Configurar PostgreSQL como TRANSIENT
+builder.Services.AddTransient<ApplicationDbContext>(provider =>
 {
     private static string? _token;
     private static readonly HttpClient _httpClient = new HttpClient();

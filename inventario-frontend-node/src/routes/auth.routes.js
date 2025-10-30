@@ -28,8 +28,9 @@ router.post('/login', async (req, res) => {
           nombreusuario: result.rows[0].nombreusuario,
           rol: result.rows[0].rol
         };
-        req.session.token = token;
-        return res.redirect('/articulos/crear');
+  req.session.token = token;
+  // Redirigir al dashboard principal después del login
+  return res.redirect('/');
       } catch (e) {
         // Mostrar error completo en pantalla y consola
         console.error('Error autenticando contra el servicio SOAP:', e);

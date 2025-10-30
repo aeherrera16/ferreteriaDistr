@@ -3,19 +3,77 @@
   <head>
     <meta charset="utf-8" />
     <title>Inventario SOA</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
     <link rel="stylesheet" href="/css/styles.css" />
     <style>
       body {
         padding: 8px;
       }
+      .navbar-brand {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
-    <nav>
-      <a href="/articulos/crear">Crear</a> |
-      <a href="/articulos/consultar">Consultar</a> |
-      <a href="/logout">Salir</a>
+    <% if (currentPath !== '/login') { %>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark"
+      style="background: linear-gradient(90deg, #332b24, #1b1f3b)"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <span class="brand-emoji">🔧🏪</span>
+          <span>Inventario Ferretería</span>
+          <small class="text-muted ms-2">— Gestión N-Capas</small>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="/articulos">🧰 Artículos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/categorias">📚 Categorías</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/proveedores">🚚 Proveedores</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Salir</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
-    <main><%- body %></main>
+    <% } %>
+    <div class="container mt-2">
+      <div class="hero d-flex align-items-center justify-content-between">
+        <div>
+          <h2 class="mb-0">🏪 Bienvenido a la Ferretería</h2>
+          <p class="muted mb-0">
+            Panel de administración — accede a artículos, categorías y
+            proveedores
+          </p>
+        </div>
+        <!-- Tip eliminado a petición del usuario -->
+      </div>
+    </div>
+    <main class="container"><%- body %></main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
