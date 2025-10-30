@@ -1,7 +1,8 @@
 {
-    "soap_url": "http://localhost:5000/InventarioService.asmx",
-    "db_host": "localhost",
+    "soap_url": "http://172.25.16.1:5000/InventarioService.asmx",
+    "db_host": "172.25.16.1",
     "db_port": "5432",
     "db_name": "postgres",
-    "db_user": "admin"
+    "db_user": "admin",
+    "descripcion": "Configuración servidor - IP detectada automáticamente"
 }

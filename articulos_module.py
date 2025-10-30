@@ -170,20 +170,12 @@ class ArticulosModule(ctk.CTkFrame):
     def cargar_articulos(self):
         """Carga los artículos desde el servidor"""
         try:
-            # Intentar cargar desde el SOAP client si está disponible
             if self.soap_client:
                 res = self.soap_client.obtener_todos_articulos()
-                print(f"🔍 Respuesta SOAP: {res}")
                 if res and res.get('exito'):
                     self.articulos_data = res.get('dato', []) or []
-                    print(f"✓ Cargados {len(self.articulos_data)} artículos")
-                    if self.articulos_data:
-                        print(f"📄 Primer artículo: {self.articulos_data[0]}")
-                        print(f"📄 Claves del artículo: {self.articulos_data[0].keys()}")
                 else:
-                    # Si el SOAP respondió pero no hay artículos o hubo error, dejar lista vacía
                     self.articulos_data = []
-                    print("✗ No hay artículos o hubo error")
             else:
                 # Sin cliente SOAP, mostrar datos de ejemplo (modo offline)
                 self.articulos_data = [
@@ -191,8 +183,6 @@ class ArticulosModule(ctk.CTkFrame):
                     {"codigo": "A002", "nombre": "Clavo 2''", "categoria": "Ferretería", "stock": 200, "precio": 0.05},
                 ]
 
-            # Mostrar los artículos cargados
-            print(f"📊 Mostrando {len(self.articulos_data)} artículos en UI")
             self.mostrar_articulos(self.articulos_data)
 
         except Exception as e:
@@ -203,14 +193,11 @@ class ArticulosModule(ctk.CTkFrame):
     
     def mostrar_articulos(self, articulos):
         """Muestra la lista de artículos en la interfaz"""
-        print(f"🖼️ mostrar_articulos llamado con {len(articulos)} artículos")
-        
         # Limpiar tabla
         for widget in self.table_scroll.winfo_children():
             widget.destroy()
         
         if len(articulos) == 0:
-            print("⚠️ Sin artículos para mostrar")
             self.no_data_label = ctk.CTkLabel(
                 self.table_scroll,
                 text="📭 No se encontraron artículos\n\nIntenta con otros términos de búsqueda",
@@ -219,15 +206,11 @@ class ArticulosModule(ctk.CTkFrame):
             )
             self.no_data_label.pack(pady=100)
         else:
-            # Mostrar artículos
-            print(f"✓ Creando {len(articulos)} filas...")
-            for i, articulo in enumerate(articulos):
-                print(f"  Fila {i+1}: {articulo.get('codigo', '?')} - {articulo.get('nombre', '?')}")
-                # Asegurar keys esperadas
+            for articulo in articulos:
                 if isinstance(articulo, dict):
                     self.create_article_row(articulo)
                 else:
-                    # Si es un objeto zeep, convertir con helper
+                    # Si es un objeto zeep, convertir
                     self.create_article_row({
                         'codigo': getattr(articulo, 'Codigo', ''),
                         'nombre': getattr(articulo, 'Nombre', ''),
@@ -238,8 +221,6 @@ class ArticulosModule(ctk.CTkFrame):
     
     def create_article_row(self, articulo):
         """Crea una fila en la tabla de artículos"""
-        print(f"🔨 create_article_row: {articulo}")
-        
         row = ctk.CTkFrame(
             self.table_scroll,
             fg_color=self.colors['white'],
@@ -257,8 +238,6 @@ class ArticulosModule(ctk.CTkFrame):
             str(articulo.get('stock', 0)),
             f"${articulo.get('precio', 0):.2f}",
         ]
-        
-        print(f"  📋 Data a mostrar: {data}")
         
         widths = [100, 250, 150, 100, 120]
         
@@ -383,7 +362,7 @@ class ArticulosModule(ctk.CTkFrame):
                 
                 # Manejar respuesta en formato diccionario
                 if isinstance(resultado, dict):
-                    if resultado.get("success", False):
+                    if resultado.get("exito", False):
                         messagebox.showinfo("Éxito", resultado.get("mensaje", "Artículo eliminado correctamente"))
                         self.cargar_articulos()  # Recargar la lista
                     else:
@@ -580,10 +559,18 @@ class ArticulosModule(ctk.CTkFrame):
                     'codigo': codigo_var.get().strip(),
                     'nombre': nombre_var.get().strip(),
                     'descripcion': descripcion_var.get().strip(),
-                    'categoria': categoria_var.get().strip() if categoria_var.get().strip() else 'General',
+                    'categoria_id': 1,  # General por defecto
                     'precio': precio,
-                    'stock': stock
+                    'precio_compra': precio * 0.6,  # 60% del precio de venta
+                    'stock': stock,
+                    'stock_minimo': max(1, stock // 10),  # 10% del stock
+                    'proveedor_id': 1  # Proveedor por defecto
                 }
+                
+                # Si es edición, agregar el ID del artículo
+                if es_edicion:
+                    datos_articulo['id'] = articulo.get('id')
+                    datos_articulo['Id'] = articulo.get('Id') or articulo.get('id')
                 
                 # Usar el cliente SOAP existente (con token de autenticación)
                 if not self.soap_client:
@@ -599,7 +586,7 @@ class ArticulosModule(ctk.CTkFrame):
                 
                 # Manejar respuesta en formato diccionario
                 if isinstance(resultado, dict):
-                    if resultado.get("success", False):
+                    if resultado.get("exito", False):
                         messagebox.showinfo("Éxito", resultado.get("mensaje", mensaje_exito))
                         ventana.destroy()
                         self.cargar_articulos()  # Recargar la lista

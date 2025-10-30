@@ -96,39 +96,28 @@ class SoapClient:
     def obtener_todos_articulos(self) -> Dict[str, Any]:
         """Obtiene todos los artículos del inventario"""
         try:
-            print("📋 Obteniendo artículos...")
-            
             if not self._verificar_autenticacion():
-                print("✗ No se pudo autenticar")
                 return {
                     "exito": False,
                     "mensaje": "No se pudo autenticar"
                 }
             
-            print(f"🔑 Usando token: {self.token[:20]}..." if self.token else "Sin token")
             response = self.client.service.ObtenerTodosArticulos(self.token)
-            
-            print(f"📨 Respuesta recibida - Exito: {response.Exito}")
             
             if response.Exito:
                 dato = getattr(response, 'Dato', None) or getattr(response, 'Datos', None)
-                print(f"📦 Dato recibido: {type(dato)}")
                 
                 if dato:
                     lista_articulos = getattr(dato, 'Articulo', None)
-                    print(f"📑 Lista artículos: {type(lista_articulos)}, cantidad: {len(lista_articulos) if lista_articulos else 0}")
                     
                     if lista_articulos:
                         articulos = [self._articulo_to_dict(art) for art in lista_articulos]
-                        print(f"✓ {len(articulos)} artículos procesados")
-                        print(f"📄 Primer artículo: {articulos[0] if articulos else 'N/A'}")
                         return {
                             "exito": True,
                             "mensaje": f"{len(articulos)} artículos encontrados",
                             "dato": articulos
                         }
                 
-                print("⚠ No hay artículos en la respuesta")
                 return {
                     "exito": True,
                     "mensaje": "No hay artículos",
@@ -136,15 +125,11 @@ class SoapClient:
                 }
             
             mensaje = getattr(response, 'Mensaje', 'Error al obtener artículos')
-            print(f"✗ Error del servidor: {mensaje}")
             return {
                 "exito": False,
                 "mensaje": mensaje
             }
         except Exception as e:
-            print(f"✗ Excepción: {str(e)}")
-            import traceback
-            traceback.print_exc()
             return {
                 "exito": False,
                 "mensaje": f"Error: {str(e)}"
@@ -165,27 +150,27 @@ class SoapClient:
                 nombre=datos_articulo.get('nombre', ''),
                 descripcion=datos_articulo.get('descripcion', ''),
                 categoriaId=datos_articulo.get('categoria_id', 1),
-                precioCompra=float(datos_articulo.get('precio', 0)),
+                precioCompra=float(datos_articulo.get('precio_compra', datos_articulo.get('precio', 0))),
                 precioVenta=float(datos_articulo.get('precio', 0)),
                 stock=int(datos_articulo.get('stock', 0)),
-                stockMinimo=0,
-                proveedorId=1
+                stockMinimo=int(datos_articulo.get('stock_minimo', 0)),
+                proveedorId=datos_articulo.get('proveedor_id', 1)
             )
             
             if response.Exito:
                 return {
-                    "success": True,
+                    "exito": True,
                     "mensaje": "Artículo creado exitosamente"
                 }
             
             mensaje = getattr(response, 'Mensaje', 'Error al crear artículo')
             return {
-                "success": False,
+                "exito": False,
                 "mensaje": mensaje
             }
         except Exception as e:
             return {
-                "success": False,
+                "exito": False,
                 "mensaje": f"Error: {str(e)}"
             }
     
@@ -194,61 +179,45 @@ class SoapClient:
         try:
             if not self._verificar_autenticacion():
                 return {
-                    "success": False,
+                    "exito": False,
                     "mensaje": "No se pudo autenticar"
                 }
             
-            # Mapeo de códigos conocidos a IDs de base de datos
-            codigo_a_id = {
-                "MART-001": 1, "TALAD-001": 2, "PINT-001": 3, "DEST-001": 4,
-                "CABLE-001": 5, "TUBO-001": 6, "LIJA-001": 7, "CERROJO-001": 8,
-                "123df": 9, "12": 10, "ASD123": 11, "sdsdf": 12
-            }
-            
-            articulo_id = codigo_a_id.get(codigo)
-            
-            if articulo_id:
-                response = self.client.service.EliminarArticulo(
-                    token=self.token,
-                    id=articulo_id
-                )
-                
-                if hasattr(response, 'Exito') and response.Exito:
-                    return {
-                        "success": True,
-                        "mensaje": "Artículo eliminado exitosamente"
-                    }
-                
-                mensaje = getattr(response, 'Mensaje', 'Error al eliminar')
-                return {
-                    "success": False,
-                    "mensaje": mensaje
-                }
-            
-            # Buscar ID dinámicamente si no está en el mapeo
+            # Buscar ID dinámicamente por código
+            articulo_id = None
             articulos_response = self.obtener_todos_articulos()
+            
             if articulos_response.get("exito"):
                 for articulo in articulos_response.get("dato", []):
-                    if str(articulo.get("Codigo", "")).strip() == str(codigo).strip():
-                        articulo_id = articulo.get("Id")
-                        if articulo_id:
-                            response = self.client.service.EliminarArticulo(
-                                token=self.token,
-                                id=int(articulo_id)
-                            )
-                            if hasattr(response, 'Exito') and response.Exito:
-                                return {
-                                    "success": True,
-                                    "mensaje": "Artículo eliminado exitosamente"
-                                }
+                    if str(articulo.get("codigo", "")).strip() == str(codigo).strip():
+                        articulo_id = articulo.get("id")
+                        break
             
+            if not articulo_id:
+                return {
+                    "exito": False,
+                    "mensaje": f"No se encontró artículo con código: {codigo}"
+                }
+            
+            response = self.client.service.EliminarArticulo(
+                token=self.token,
+                id=int(articulo_id)
+            )
+            
+            if hasattr(response, 'Exito') and response.Exito:
+                return {
+                    "exito": True,
+                    "mensaje": "Artículo eliminado exitosamente"
+                }
+            
+            mensaje = getattr(response, 'Mensaje', 'Error al eliminar')
             return {
-                "success": False,
-                "mensaje": f"No se encontró artículo con código: {codigo}"
+                "exito": False,
+                "mensaje": mensaje
             }
         except Exception as e:
             return {
-                "success": False,
+                "exito": False,
                 "mensaje": f"Error: {str(e)}"
             }
     
@@ -257,64 +226,57 @@ class SoapClient:
         try:
             if not self._verificar_autenticacion():
                 return {
-                    "success": False,
+                    "exito": False,
                     "mensaje": "No se pudo autenticar"
                 }
             
+            # Obtener ID del artículo (puede venir directamente o buscar por código)
+            articulo_id = datos_articulo.get('id') or datos_articulo.get('Id')
             codigo = datos_articulo.get('codigo', '')
             
-            # Mapeo de códigos conocidos a IDs
-            codigo_a_id = {
-                "MART-001": 1, "TALAD-001": 2, "PINT-001": 3, "DEST-001": 4,
-                "CABLE-001": 5, "TUBO-001": 6, "LIJA-001": 7, "CERROJO-001": 8,
-                "123df": 9, "12": 10, "ASD123": 11, "sdsdf": 12
-            }
-            
-            articulo_id = codigo_a_id.get(codigo)
-            
-            # Buscar dinámicamente si no está en el mapeo
-            if not articulo_id:
+            # Si no hay ID, buscar dinámicamente por código
+            if not articulo_id and codigo:
                 articulos_response = self.obtener_todos_articulos()
                 if articulos_response.get("exito"):
                     for articulo in articulos_response.get("dato", []):
-                        if str(articulo.get("Codigo", "")).strip() == str(codigo).strip():
-                            articulo_id = articulo.get("Id")
+                        if str(articulo.get("codigo", "")).strip() == str(codigo).strip():
+                            articulo_id = articulo.get("id")
                             break
             
             if not articulo_id:
                 return {
-                    "success": False,
+                    "exito": False,
                     "mensaje": f"No se encontró artículo con código: {codigo}"
                 }
             
             response = self.client.service.ActualizarArticulo(
                 token=self.token,
-                id=articulo_id,
+                id=int(articulo_id),
                 codigo=datos_articulo.get('codigo', ''),
                 nombre=datos_articulo.get('nombre', ''),
                 descripcion=datos_articulo.get('descripcion', ''),
                 categoriaId=datos_articulo.get('categoria_id', 1),
-                precioCompra=float(datos_articulo.get('precio', 0)),
+                precioCompra=float(datos_articulo.get('precio_compra', datos_articulo.get('precio', 0))),
                 precioVenta=float(datos_articulo.get('precio', 0)),
                 stock=int(datos_articulo.get('stock', 0)),
-                stockMinimo=0,
-                proveedorId=1
+                stockMinimo=int(datos_articulo.get('stock_minimo', 0)),
+                proveedorId=datos_articulo.get('proveedor_id', 1)
             )
             
             if hasattr(response, 'Exito') and response.Exito:
                 return {
-                    "success": True,
+                    "exito": True,
                     "mensaje": "Artículo actualizado exitosamente"
                 }
             
             mensaje = getattr(response, 'Mensaje', 'Error al actualizar')
             return {
-                "success": False,
+                "exito": False,
                 "mensaje": mensaje
             }
         except Exception as e:
             return {
-                "success": False,
+                "exito": False,
                 "mensaje": f"Error: {str(e)}"
             }
     

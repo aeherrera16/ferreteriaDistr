@@ -1,4 +1,4 @@
-# Sistema de Inventario - Ferretería
+# 🏪 Sistema de Inventario - Ferretería
 
 Sistema de gestión de inventario desarrollado en Python con interfaz CustomTkinter y backend SOAP en C#.
 
@@ -7,19 +7,18 @@ Sistema de gestión de inventario desarrollado en Python con interfaz CustomTkin
 ```
 cliente-python/
 ├── dist/
-│   └── InventarioFerreteria.exe    # Ejecutable final
-├── articulos_module.py              # Módulo CRUD de artículos
-├── config.py                        # Configuración del sistema
+│   ├── InventarioFerreteria.exe        # Ejecutable sin consola (producción)
+│   └── InventarioFerreteria_DEBUG.exe  # Ejecutable con consola (debug)
+├── articulos_module.py              # Módulo CRUD de artículos ✅
 ├── configuracion_module.py          # Módulo de configuración UI
-├── connection_config.json           # Configuración de conexión
-├── dashboard_module.py              # Módulo del dashboard principal
+├── connection_config.json           # ⚙️ Configuración de conexión servidor
+├── dashboard_module.py              # Dashboard con estadísticas en tiempo real
 ├── inventario_module.py             # Módulo de inventario
-├── login_window.py                  # Ventana de login
-├── main.py                          # Punto de entrada principal
-├── main_window.py                   # Ventana principal
+├── login_window.py                  # Ventana de login (deprecated)
+├── main.py                          # 🚀 Punto de entrada principal
+├── main_window.py                   # Ventana principal de la aplicación
 ├── reportes_module.py               # Módulo de reportes
-├── soap_client.py                   # Cliente SOAP optimizado
-└── styles.py                        # Estilos y temas UI
+└── soap_client.py                   # 🔌 Cliente SOAP optimizado y limpio
 ```
 
 ## 🚀 Características
@@ -41,10 +40,56 @@ cliente-python/
 ### Servidor (C#)
 - .NET 6.0+
 - PostgreSQL 15+
-- Servicio SOAP ejecutándose en `http://localhost:5000`
+- Servicio SOAP ejecutándose (puerto 5000 por defecto)
+- **IP configurada**: El servidor debe estar accesible desde la red
 
 ### Cliente (Python)
-El ejecutable ya incluye todas las dependencias necesarias.
+- El ejecutable ya incluye todas las dependencias necesarias
+- **Configuración de red**: Editar `connection_config.json` para acceso remoto
+
+## 🌐 Configuración para Acceso Remoto
+
+### En el Servidor (PC que ejecuta el servicio C#)
+
+1. **Obtener la IP del servidor**:
+   ```powershell
+   ipconfig
+   # Busca "Dirección IPv4" (ejemplo: 192.168.1.100)
+   ```
+
+2. **Configurar el firewall**:
+   - Permite conexiones entrantes en el puerto 5000
+   - O desactiva temporalmente el firewall para pruebas
+
+3. **Ejecutar el servicio SOAP C#**:
+   - Asegúrate que esté escuchando en todas las interfaces (0.0.0.0:5000)
+
+### En el Cliente (PC que ejecuta el .exe de Python)
+
+1. **Editar `connection_config.json`**:
+   ```json
+   {
+       "soap_url": "http://192.168.1.100:5000/InventarioService.asmx",
+       "db_host": "192.168.1.100",
+       "descripcion": "Reemplaza 192.168.1.100 con la IP real de tu servidor"
+   }
+   ```
+
+2. **Verificar conectividad**:
+   ```powershell
+   ping 192.168.1.100
+   Test-NetConnection 192.168.1.100 -Port 5000
+   ```
+
+3. **Ejecutar el cliente**:
+   ```
+   InventarioFerreteria.exe
+   ```
+
+### 📋 IP Actual Detectada
+
+- **IP del servidor**: `172.25.16.1`
+- Ya configurada en `connection_config.json`
 
 ## 📝 Credenciales por Defecto
 
