@@ -1,0 +1,24 @@
+[2025-10-28 16:41:16.763 -05:00 ERR] An error occurred processing the message
+System.Runtime.Serialization.SerializationException: There was an error deserializing the object of type System.Nullable`1[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]. The value 'dfv' cannot be parsed as the type 'Int32'.
+ ---> System.Xml.XmlException: The value 'dfv' cannot be parsed as the type 'Int32'.
+ ---> System.FormatException: The input string 'dfv' was not in a correct format.
+   at System.Number.ThrowFormatException[TChar](ReadOnlySpan`1 value)
+   at System.Int32.Parse(String s, NumberStyles style, IFormatProvider provider)
+   at System.Xml.XmlConverter.ToInt32(String value)
+   --- End of inner exception stack trace ---
+   at System.Xml.XmlConverter.ToInt32(String value)
+   at System.Xml.ValueHandle.ToInt()
+   at System.Xml.XmlBaseReader.ReadContentAsInt()
+   at System.Xml.XmlDictionaryReader.ReadElementContentAsInt()
+   at System.Xml.XmlBinaryReader.ReadElementContentAsInt()
+   at System.Runtime.Serialization.DataContracts.IntDataContract.ReadXmlValue(XmlReaderDelegator reader, XmlObjectSerializerReadContext context)
+   at System.Runtime.Serialization.XmlObjectSerializerReadContext.InternalDeserialize(XmlReaderDelegator reader, String name, String ns, Type declaredType, DataContract& dataContract)
+   at System.Runtime.Serialization.XmlObjectSerializerReadContext.InternalDeserialize(XmlReaderDelegator xmlReader, Type declaredType, DataContract dataContract, String name, String ns)
+   at System.Runtime.Serialization.DataContractSerializer.InternalReadObject(XmlReaderDelegator xmlReader, Boolean verifyObjectName, DataContractResolver dataContractResolver)
+   at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName, DataContractResolver dataContractResolver)
+   --- End of inner exception stack trace ---
+   at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName, DataContractResolver dataContractResolver)
+   at SoapCore.Serializer.SerializerHelper.DeserializeDataContract(XmlDictionaryReader xmlReader, Type parameterType, String parameterName, String parameterNs, IEnumerable`1 knownTypes) in /_/src/SoapCore/Serializer/SerializerHelper.cs:line 120
+   at SoapCore.Serializer.SerializerHelper.DeserializeInputParameter(XmlDictionaryReader xmlReader, Type parameterType, String parameterName, String parameterNs, ICustomAttributeProvider customAttributeProvider, IEnumerable`1 knownTypes) in /_/src/SoapCore/Serializer/SerializerHelper.cs:line 61
+   at SoapCore.SoapEndpointMiddleware`1.ProcessMessage(Message requestMessage, SoapMessageEncoder messageEncoder, IAsyncMessageFilter[] asyncMessageFilters, HttpContext httpContext, IServiceProvider serviceProvider) in /_/src/SoapCore/SoapEndpointMiddleware.cs:line 532
+   at SoapCore.SoapEndpointMiddleware`1.ProcessOperation(HttpContext httpContext, IServiceProvider serviceProvider) in /_/src/SoapCore/SoapEndpointMiddleware.cs:line 328

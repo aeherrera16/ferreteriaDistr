@@ -120,6 +120,71 @@ public class ArticuloService : IArticuloService
         return respuesta;
     }
 
+    // InventarioFerreteria.Business/Services/ArticuloService.cs
+    // ... (después del método ObtenerArticuloPorCodigoAsync, agrega estos dos)
+
+    public async Task<RespuestaDTO<Articulo>> ObtenerArticuloPorIdAsync(int id)
+    {
+        var respuesta = new RespuestaDTO<Articulo>();
+
+        try
+        {
+            var articulo = await _articuloRepository.ObtenerPorIdAsync(id);
+
+            if (articulo == null)
+            {
+                respuesta.Exito = false;
+                respuesta.Mensaje = $"No se encontró el artículo con ID {id}";
+                return respuesta;
+            }
+
+            respuesta.Exito = true;
+            respuesta.Mensaje = "Artículo encontrado";
+            respuesta.Datos = articulo;
+        }
+        catch (Exception ex)
+        {
+            respuesta.Exito = false;
+            respuesta.Mensaje = "Error al consultar el artículo";
+            respuesta.Errores = new List<string> { ex.Message };
+        }
+
+        return respuesta;
+    }
+
+    public async Task<RespuestaDTO<bool>> EliminarArticuloAsync(int id)
+    {
+        var respuesta = new RespuestaDTO<bool>();
+
+        try
+        {
+            var articuloExistente = await _articuloRepository.ObtenerPorIdAsync(id);
+
+            if (articuloExistente == null)
+            {
+                respuesta.Exito = false;
+                respuesta.Mensaje = "Artículo no encontrado";
+                respuesta.Datos = false;
+                return respuesta;
+            }
+
+            var eliminado = await _articuloRepository.EliminarAsync(id);
+
+            respuesta.Exito = eliminado;
+            respuesta.Mensaje = eliminado ? "Artículo eliminado correctamente" : "No se pudo eliminar el artículo";
+            respuesta.Datos = eliminado;
+        }
+        catch (Exception ex)
+        {
+            respuesta.Exito = false;
+            respuesta.Mensaje = "Error al eliminar el artículo";
+            respuesta.Errores = new List<string> { ex.Message };
+            respuesta.Datos = false;
+        }
+
+        return respuesta;
+    }
+
     public async Task<RespuestaDTO<List<Articulo>>> ObtenerTodosAsync()
     {
         var respuesta = new RespuestaDTO<List<Articulo>>();

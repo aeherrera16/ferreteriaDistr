@@ -57,20 +57,66 @@ public class ArticuloRepository : IArticuloRepository
         return articulo.Id;
     }
 
+    // InventarioFerreteria.DataAccess/Repositories/ArticuloRepository.cs
     public async Task<bool> ActualizarAsync(Articulo articulo)
     {
-        articulo.FechaActualizacion = DateTime.UtcNow;
-        _context.Articulos.Update(articulo);
-        return await _context.SaveChangesAsync() > 0;
+        try
+        {
+            // Obtener la entidad rastreada
+            var articuloExistente = await _context.Articulos.FindAsync(articulo.Id);
+            
+            if (articuloExistente == null)
+                return false;
+
+            // Actualizar solo las propiedades
+            articuloExistente.Codigo = articulo.Codigo;
+            articuloExistente.Nombre = articulo.Nombre;
+            articuloExistente.Descripcion = articulo.Descripcion;
+            articuloExistente.CategoriaId = articulo.CategoriaId;
+            articuloExistente.PrecioCompra = articulo.PrecioCompra;
+            articuloExistente.PrecioVenta = articulo.PrecioVenta;
+            articuloExistente.Stock = articulo.Stock;
+            articuloExistente.StockMinimo = articulo.StockMinimo;
+            articuloExistente.ProveedorId = articulo.ProveedorId;
+            articuloExistente.FechaActualizacion = DateTime.UtcNow;
+            // NO actualizar: FechaCreacion, Activo, Id
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] ActualizarAsync: {ex.Message}");
+            throw;
+        }
     }
 
+    // InventarioFerreteria.DataAccess/Repositories/ArticuloRepository.cs
     public async Task<bool> EliminarAsync(int id)
     {
-        var articulo = await _context.Articulos.FindAsync(id);
-        if (articulo == null) return false;
+        try
+        {
+            var articulo = await _context.Articulos.FindAsync(id);
+            if (articulo == null) 
+            {
+                Console.WriteLine($"[INFO] Artículo con ID {id} no encontrado");
+                return false;
+            }
 
-        articulo.Activo = false;
-        return await _context.SaveChangesAsync() > 0;
+            // Eliminación física - borra permanentemente de la base de datos
+            _context.Articulos.Remove(articulo);
+            
+            var resultado = await _context.SaveChangesAsync() > 0;
+            Console.WriteLine($"[INFO] Artículo {id} eliminado permanentemente de la BD: {resultado}");
+            
+            return resultado;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] EliminarAsync: {ex.Message}");
+            if (ex.InnerException != null)
+                Console.WriteLine($"[ERROR] InnerException: {ex.InnerException.Message}");
+            throw;
+        }
     }
 
     public async Task<bool> ExisteCodigoAsync(string codigo, int? excluirId = null)

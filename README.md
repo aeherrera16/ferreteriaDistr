@@ -1,57 +1,57 @@
-# ?? Sistema de Inventario para FerreterÌa - Arquitectura SOAP
+# Sistema de Inventario para Ferreter√≠a - Arquitectura SOAP
 
-**Proyecto acadÈmico de sistema de gestiÛn de inventario usando arquitectura N-Capas y servicios SOAP con .NET 9 y PostgreSQL.**
+**Proyecto acad√©mico de sistema de gesti√≥n de inventario usando arquitectura N-Capas y servicios SOAP con .NET 9 y PostgreSQL.**
 
 ---
 
-## ?? Tabla de Contenidos
+## Tabla de Contenidos
 
-- [DescripciÛn del Proyecto](#-descripciÛn-del-proyecto)
+- [Descripci√≥n del Proyecto](#-descripci√≥n-del-proyecto)
 - [Arquitectura](#-arquitectura-del-sistema)
 - [Equipo de Desarrollo](#-equipo-de-desarrollo)
 - [Requisitos Previos](#-requisitos-previos)
-- [InstalaciÛn y ConfiguraciÛn](#-instalaciÛn-y-configuraciÛn)
-- [EjecuciÛn del Sistema](#-ejecuciÛn-del-sistema)
+- [Instalaci√≥n y Configuraci√≥n](#-instalaci√≥n-y-configuraci√≥n)
+- [Ejecuci√≥n del Sistema](#-ejecuci√≥n-del-sistema)
 - [Uso del Sistema](#-uso-del-sistema)
-- [TecnologÌas Utilizadas](#-tecnologÌas-utilizadas)
+- [Tecnolog√≠as Utilizadas](#-tecnolog√≠as-utilizadas)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Base de Datos](#-base-de-datos)
 - [Servicios SOAP](#-servicios-soap)
-- [DocumentaciÛn TÈcnica](#-documentaciÛn-tÈcnica)
+- [Documentaci√≥n T√©cnica](#-documentaci√≥n-t√©cnica)
 - [Troubleshooting](#-troubleshooting)
 
 ---
 
-## ?? DescripciÛn del Proyecto
+## Descripci√≥n del Proyecto
 
-Sistema de control de inventario para una ferreterÌa que implementa:
+Sistema de control de inventario para una ferreter√≠a que implementa:
 
-- **Arquitectura N-Capas** (PresentaciÛn, Negocio, Datos, Servicios)
+- **Arquitectura N-Capas** (Presentaci√≥n, Negocio, Datos, Servicios)
 - **Servicios SOAP** para operaciones de inventario
-- **AutenticaciÛn JWT** con contraseÒas hasheadas (BCrypt)
+- **Autenticaci√≥n JWT** con contrase√±as hasheadas (BCrypt)
 - **Base de datos relacional** PostgreSQL
 - **Cliente de consola** consumidor de servicios SOAP
 
 ### Funcionalidades Principales
 
-? **RF1-RF4:** GestiÛn completa de artÌculos (registrar, consultar, actualizar)  
-? **RF5-RF6:** Servicios SOAP para insertar y consultar artÌculos  
-? **RF7:** Control de stock con alertas de reposiciÛn  
-? **RF8:** Persistencia en PostgreSQL  
-? **RF9:** Interfaz de usuario (consola)  
-? **RF10:** Manejo robusto de errores con SOAP Faults  
+ **RF1-RF4:** Gesti√≥n completa de art√≠culos (registrar, consultar, actualizar)  
+ **RF5-RF6:** Servicios SOAP para insertar y consultar art√≠culos  
+ **RF7:** Control de stock con alertas de reposici√≥n  
+ **RF8:** Persistencia en PostgreSQL  
+ **RF9:** Interfaz de usuario (consola)  
+ **RF10:** Manejo robusto de errores con SOAP Faults  
 
 ---
 
-## ??? Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ### Diagrama de Capas
 
 ```
 ???????????????????????????????????????????????????????????
-?          CAPA DE PRESENTACI”N (Cliente)                 ?
+?          CAPA DE PRESENTACI√ìN (Cliente)                 ?
 ?         InventarioFerreteria.Client                     ?
-?              (AplicaciÛn Consola)                        ?
+?              (Aplicaci√≥n Consola)                        ?
 ???????????????????????????????????????????????????????????
                         ?
                         ? Consume servicios SOAP (XML/HTTP)
@@ -60,26 +60,26 @@ Sistema de control de inventario para una ferreterÌa que implementa:
 ?         CAPA DE SERVICIOS (Servidor SOAP)               ?
 ?       InventarioFerreteria.SoapService                  ?
 ?           (ASP.NET Core Web + SoapCore)                 ?
-?   ï IInventarioSoapService                              ?
-?   ï AutenticaciÛn JWT                                   ?
-?   ï Operaciones: Insertar, Consultar, Listar           ?
+?   ‚Ä¢ IInventarioSoapService                              ?
+?   ‚Ä¢ Autenticaci√≥n JWT                                   ?
+?   ‚Ä¢ Operaciones: Insertar, Consultar, Listar           ?
 ???????????????????????????????????????????????????????????
                         ?
 ???????????????????????????????????????????????????????????
 ?          CAPA DE NEGOCIO (Business Logic)               ?
 ?        InventarioFerreteria.Business                    ?
-?   ï ArticuloService                                     ?
-?   ï AutenticacionService                                ?
-?   ï Validaciones de negocio (RF3)                       ?
-?   ï Reglas de stock y precios                           ?
+?   ‚Ä¢ ArticuloService                                     ?
+?   ‚Ä¢ AutenticacionService                                ?
+?   ‚Ä¢ Validaciones de negocio (RF3)                       ?
+?   ‚Ä¢ Reglas de stock y precios                           ?
 ???????????????????????????????????????????????????????????
                         ?
 ???????????????????????????????????????????????????????????
 ?         CAPA DE ACCESO A DATOS (Data Access)            ?
 ?       InventarioFerreteria.DataAccess                   ?
-?   ï ApplicationDbContext (EF Core)                      ?
-?   ï ArticuloRepository                                  ?
-?   ï UsuarioRepository                                   ?
+?   ‚Ä¢ ApplicationDbContext (EF Core)                      ?
+?   ‚Ä¢ ArticuloRepository                                  ?
+?   ‚Ä¢ UsuarioRepository                                   ?
 ???????????????????????????????????????????????????????????
                         ?
 ???????????????????????????????????????????????????????????
@@ -91,9 +91,9 @@ Sistema de control de inventario para una ferreterÌa que implementa:
 ???????????????????????????????????????????????????????????
 ?          CAPA DE ENTIDADES (Shared)                     ?
 ?        InventarioFerreteria.Entities                    ?
-?   ï Modelos de dominio                                  ?
-?   ï DTOs (Data Transfer Objects)                        ?
-?   ï Contratos de servicio                               ?
+?   ‚Ä¢ Modelos de dominio                                  ?
+?   ‚Ä¢ DTOs (Data Transfer Objects)                        ?
+?   ‚Ä¢ Contratos de servicio                               ?
 ???????????????????????????????????????????????????????????
 ```
 
@@ -103,9 +103,9 @@ Sistema de control de inventario para una ferreterÌa que implementa:
 
 | Miembro | Rol Principal | Responsabilidades |
 |---------|---------------|-------------------|
-| **Anahy Herrera** | An·lisis y Base de Datos | ï Documento ERS (EspecificaciÛn de Requisitos)<br>ï Documento DDA (DiseÒo ArquitectÛnico)<br>ï DiseÒo y scripts de base de datos<br>ï Diagramas UML (Casos de Uso, Clases, Secuencia, ER)<br>ï Evidencias de pruebas<br>ï Informe final |
-| **Oscar [Apellido]** | Backend y Servicios | ï Capa de Negocio (Business)<br>ï Capa de Datos (DataAccess)<br>ï Servicios SOAP (SoapService)<br>ï Pruebas unitarias e integraciÛn<br>ï Logs y manejo de errores |
-| **Camila [Apellido]** | Frontend y DevOps | ï Cliente de consola<br>ï Interfaz de usuario<br>ï ConfiguraciÛn CI/CD<br>ï Manual de despliegue<br>ï README y guÌas<br>ï PresentaciÛn final |
+| **Anahy Herrera** | An√°lisis y Base de Datos | ‚Ä¢ Documento ERS (Especificaci√≥n de Requisitos)<br>‚Ä¢ Documento DDA (Dise√±o Arquitect√≥nico)<br>‚Ä¢ Dise√±o y scripts de base de datos<br>‚Ä¢ Diagramas UML (Casos de Uso, Clases, Secuencia, ER)<br>‚Ä¢ Evidencias de pruebas<br>‚Ä¢ Informe final |
+| **Oscar [Apellido]** | Backend y Servicios | ‚Ä¢ Capa de Negocio (Business)<br>‚Ä¢ Capa de Datos (DataAccess)<br>‚Ä¢ Servicios SOAP (SoapService)<br>‚Ä¢ Pruebas unitarias e integraci√≥n<br>‚Ä¢ Logs y manejo de errores |
+| **Camila [Apellido]** | Frontend y DevOps | ‚Ä¢ Cliente de consola<br>‚Ä¢ Interfaz de usuario<br>‚Ä¢ Configuraci√≥n CI/CD<br>‚Ä¢ Manual de despliegue<br>‚Ä¢ README y gu√≠as<br>‚Ä¢ Presentaci√≥n final |
 
 ---
 
@@ -119,7 +119,7 @@ Sistema de control de inventario para una ferreterÌa que implementa:
 - **Visual Studio 2022** o **VS Code** ([Descargar](https://visualstudio.microsoft.com/))
 - **Git** ([Descargar](https://git-scm.com/))
 
-### Verificar InstalaciÛn
+### Verificar Instalaci√≥n
 
 ```bash
 # Verificar .NET
@@ -134,7 +134,7 @@ git --version
 
 ---
 
-## ?? InstalaciÛn y ConfiguraciÛn
+## ?? Instalaci√≥n y Configuraci√≥n
 
 ### 1?? Clonar el Repositorio
 
@@ -174,17 +174,17 @@ dotnet restore
    - articulos
    - logoperaciones
 
-#### C. Hashear las ContraseÒas (IMPORTANTE)
+#### C. Hashear las Contrase√±as (IMPORTANTE)
 
-Las contraseÒas en la base de datos deben estar hasheadas con BCrypt.
+Las contrase√±as en la base de datos deben estar hasheadas con BCrypt.
 
-**OpciÛn 1: Script SQL Automatizado**
+**Opci√≥n 1: Script SQL Automatizado**
 ```sql
 -- Ejecutar en Query Tool de pgAdmin:
 -- docs/Scripts-SQL/02-hash-passwords.sql
 ```
 
-**OpciÛn 2: Generar Hashes Manualmente**
+**Opci√≥n 2: Generar Hashes Manualmente**
 
 ```bash
 # Crear proyecto temporal
@@ -219,7 +219,7 @@ UPDATE usuarios SET passwordhash = 'HASH_ADMIN_AQUI' WHERE nombreusuario = 'admi
 UPDATE usuarios SET passwordhash = 'HASH_USUARIO_AQUI' WHERE nombreusuario = 'usuario';
 ```
 
-### 4?? Configurar Cadena de ConexiÛn
+### 4?? Configurar Cadena de Conexi√≥n
 
 Editar `InventarioFerreteria.SoapService/appsettings.json`:
 
@@ -231,25 +231,25 @@ Editar `InventarioFerreteria.SoapService/appsettings.json`:
 }
 ```
 
-**?? Importante:** Reemplazar `TU_PASSWORD` con tu contraseÒa de PostgreSQL.
+**?? Importante:** Reemplazar `TU_PASSWORD` con tu contrase√±a de PostgreSQL.
 
 ---
 
-## ?? EjecuciÛn del Sistema
+## ?? Ejecuci√≥n del Sistema
 
-El sistema requiere ejecutar **2 proyectos simult·neamente:**
+El sistema requiere ejecutar **2 proyectos simult√°neamente:**
 1. **Servidor SOAP** (InventarioFerreteria.SoapService)
 2. **Cliente** (InventarioFerreteria.Client)
 
-### OpciÛn 1: Visual Studio (Recomendado)
+### Opci√≥n 1: Visual Studio (Recomendado)
 
 1. Abrir `InventarioFerreteria.sln` en Visual Studio
-2. Click derecho en la **SoluciÛn** (raÌz del Explorador de Soluciones)
+2. Click derecho en la **Soluci√≥n** (ra√≠z del Explorador de Soluciones)
 3. Seleccionar **"Configurar proyectos de inicio"** o **"Set Startup Projects"**
 4. Elegir **"Varios proyectos de inicio"** / **"Multiple startup projects"**
 5. Configurar:
 
-   | Proyecto | AcciÛn |
+   | Proyecto | Acci√≥n |
    |----------|--------|
    | InventarioFerreteria.SoapService | **Iniciar** |
    | InventarioFerreteria.Client | **Iniciar** |
@@ -258,11 +258,11 @@ El sistema requiere ejecutar **2 proyectos simult·neamente:**
 6. Click **"Aceptar"**
 7. Presionar **F5** o click en ?? **Iniciar**
 
-**Resultado:** Se abrir·n 2 ventanas:
+**Resultado:** Se abrir√°n 2 ventanas:
 - Terminal del servidor SOAP (puerto 5233)
-- Terminal del cliente (men˙ interactivo)
+- Terminal del cliente (men√∫ interactivo)
 
-### OpciÛn 2: LÌnea de Comandos (2 Terminales)
+### Opci√≥n 2: L√≠nea de Comandos (2 Terminales)
 
 **Terminal 1 - Servidor SOAP:**
 ```bash
@@ -281,10 +281,10 @@ cd InventarioFerreteria.Client
 dotnet run
 ```
 
-### OpciÛn 3: Compilar y Ejecutar
+### Opci√≥n 3: Compilar y Ejecutar
 
 ```bash
-# Compilar toda la soluciÛn
+# Compilar toda la soluci√≥n
 dotnet build
 
 # Ejecutar servidor
@@ -300,107 +300,107 @@ cd InventarioFerreteria.Client/bin/Debug/net9.0
 
 ## ?? Uso del Sistema
 
-### Men˙ Principal del Cliente
+### Men√∫ Principal del Cliente
 
 ```
-=== Cliente SOAP - Sistema de Inventario FerreterÌa ===
+=== Cliente SOAP - Sistema de Inventario Ferreter√≠a ===
 
---- MEN⁄ PRINCIPAL ---
+--- MEN√ö PRINCIPAL ---
 1. Autenticar
-2. Insertar ArtÌculo
-3. Consultar ArtÌculo por CÛdigo
-4. Listar Todos los ArtÌculos
+2. Insertar Art√≠culo
+3. Consultar Art√≠culo por C√≥digo
+4. Listar Todos los Art√≠culos
 5. Salir
 
-Seleccione una opciÛn:
+Seleccione una opci√≥n:
 ```
 
-### 1?? AutenticaciÛn (PRIMER PASO OBLIGATORIO)
+### 1?? Autenticaci√≥n (PRIMER PASO OBLIGATORIO)
 
 ```
---- AUTENTICACI”N ---
+--- AUTENTICACI√ìN ---
 Usuario: admin
-ContraseÒa: Admin123!
+Contrase√±a: Admin123!
 
-? AutenticaciÛn exitosa
+? Autenticaci√≥n exitosa
 Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Credenciales disponibles:**
-- **Administrador:** usuario: `admin` / contraseÒa: `Admin123!`
-- **Usuario:** usuario: `usuario` / contraseÒa: `Usuario123!`
+- **Administrador:** usuario: `admin` / contrase√±a: `Admin123!`
+- **Usuario:** usuario: `usuario` / contrase√±a: `Usuario123!`
 
-### 2?? Insertar ArtÌculo
+### 2?? Insertar Art√≠culo
 
 ```
---- INSERTAR NUEVO ARTÕCULO ---
-CÛdigo: TEST-001
+--- INSERTAR NUEVO ART√çCULO ---
+C√≥digo: TEST-001
 Nombre: Martillo Prueba
-DescripciÛn: ArtÌculo de prueba
-ID CategorÌa: 1
+Descripci√≥n: Art√≠culo de prueba
+ID Categor√≠a: 1
 Precio Compra: 10.00
 Precio Venta: 20.00
 Stock: 50
-Stock MÌnimo: 10
+Stock M√≠nimo: 10
 ID Proveedor: 1
 
-? ArtÌculo insertado correctamente
+? Art√≠culo insertado correctamente
 ==================================================
 ID: 13
-CÛdigo: TEST-001
+C√≥digo: TEST-001
 Nombre: Martillo Prueba
 ...
 ```
 
-**Validaciones autom·ticas:**
-- CÛdigo ˙nico (no duplicados)
+**Validaciones autom√°ticas:**
+- C√≥digo √∫nico (no duplicados)
 - Precio venta > Precio compra
 - Stock ? 0
-- Alerta si stock < stock mÌnimo
+- Alerta si stock < stock m√≠nimo
 
-### 3?? Consultar ArtÌculo por CÛdigo
+### 3?? Consultar Art√≠culo por C√≥digo
 
 ```
---- CONSULTAR ARTÕCULO ---
-CÛdigo del artÌculo: MART-001
+--- CONSULTAR ART√çCULO ---
+C√≥digo del art√≠culo: MART-001
 
-? ArtÌculo encontrado
+? Art√≠culo encontrado
 ==================================================
-CÛdigo: MART-001
-Nombre: Martillo de UÒa 16oz
+C√≥digo: MART-001
+Nombre: Martillo de U√±a 16oz
 Stock: 25
 Precio Venta: $15.00
 ...
 ```
 
-### 4?? Listar Todos los ArtÌculos
+### 4?? Listar Todos los Art√≠culos
 
 ```
-? ArtÌculos obtenidos exitosamente
+? Art√≠culos obtenidos exitosamente
 
-CÛdigo          Nombre                          Stock  Precio Venta
+C√≥digo          Nombre                          Stock  Precio Venta
 ----------------------------------------------------------------------
-MART-001        Martillo de UÒa 16oz              25        $15.00
-TALAD-001       Taladro ElÈctrico 500W            15        $89.99
-PINT-001        Pintura L·tex Blanco 1GL          50        $22.50
+MART-001        Martillo de U√±a 16oz              25        $15.00
+TALAD-001       Taladro El√©ctrico 500W            15        $89.99
+PINT-001        Pintura L√°tex Blanco 1GL          50        $22.50
 ...
 ```
 
 ---
 
-## ??? TecnologÌas Utilizadas
+## ??? Tecnolog√≠as Utilizadas
 
 ### Backend
 
-| TecnologÌa | VersiÛn | PropÛsito |
+| Tecnolog√≠a | Versi√≥n | Prop√≥sito |
 |------------|---------|-----------|
 | .NET | 9.0 | Framework principal |
 | ASP.NET Core | 9.0 | Servidor web |
 | Entity Framework Core | 9.0 | ORM para base de datos |
-| SoapCore | 1.1.0.50 | ImplementaciÛn de servicios SOAP |
+| SoapCore | 1.1.0.50 | Implementaci√≥n de servicios SOAP |
 | Npgsql | 9.0.0 | Driver PostgreSQL |
-| BCrypt.Net-Next | 4.0.3 | Hashing de contraseÒas |
-| System.IdentityModel.Tokens.Jwt | 8.2.1 | AutenticaciÛn JWT |
+| BCrypt.Net-Next | 4.0.3 | Hashing de contrase√±as |
+| System.IdentityModel.Tokens.Jwt | 8.2.1 | Autenticaci√≥n JWT |
 
 ### Base de Datos
 
@@ -409,7 +409,7 @@ PINT-001        Pintura L·tex Blanco 1GL          50        $22.50
 ### Herramientas de Desarrollo
 
 - **Visual Studio 2022** / **VS Code**
-- **pgAdmin 4** - AdministraciÛn de PostgreSQL
+- **pgAdmin 4** - Administraci√≥n de PostgreSQL
 - **Git** - Control de versiones
 - **SoapUI** / **Postman** - Pruebas de servicios SOAP
 
@@ -423,13 +423,13 @@ InventarioFerreteria/
 ??? InventarioFerreteria.SoapService/      # ??? Servidor SOAP (ASP.NET Core Web)
 ?   ??? Services/
 ?   ?   ??? IInventarioSoapService.cs      # Contrato SOAP
-?   ?   ??? InventarioSoapService.cs       # ImplementaciÛn SOAP
-?   ??? Program.cs                          # ConfiguraciÛn del servidor
-?   ??? appsettings.json                    # ConfiguraciÛn (cadena de conexiÛn)
+?   ?   ??? InventarioSoapService.cs       # Implementaci√≥n SOAP
+?   ??? Program.cs                          # Configuraci√≥n del servidor
+?   ??? appsettings.json                    # Configuraci√≥n (cadena de conexi√≥n)
 ?   ??? InventarioFerreteria.SoapService.csproj
 ?
 ??? InventarioFerreteria.Client/            # ?? Cliente de Consola
-?   ??? Program.cs                          # LÛgica del cliente SOAP
+?   ??? Program.cs                          # L√≥gica del cliente SOAP
 ?   ??? InventarioFerreteria.Client.csproj
 ?
 ??? InventarioFerreteria.Business/          # ?? Capa de Negocio
@@ -437,8 +437,8 @@ InventarioFerreteria/
 ?   ?   ??? IArticuloService.cs
 ?   ?   ??? IAutenticacionService.cs
 ?   ??? Services/
-?   ?   ??? ArticuloService.cs             # LÛgica de negocio de artÌculos
-?   ?   ??? AutenticacionService.cs        # LÛgica de autenticaciÛn
+?   ?   ??? ArticuloService.cs             # L√≥gica de negocio de art√≠culos
+?   ?   ??? AutenticacionService.cs        # L√≥gica de autenticaci√≥n
 ?   ??? InventarioFerreteria.Business.csproj
 ?
 ??? InventarioFerreteria.DataAccess/        # ??? Capa de Acceso a Datos
@@ -462,25 +462,25 @@ InventarioFerreteria/
 ?   ?   ??? RespuestaDTO.cs
 ?   ??? InventarioFerreteria.Entities.csproj
 ?
-??? docs/                                    # ?? DocumentaciÛn TÈcnica
+??? docs/                                    # ?? Documentaci√≥n T√©cnica
 ?   ??? 01-ERS/
-?   ?   ??? ERS_InventarioFerreteria.md    # EspecificaciÛn de Requisitos
+?   ?   ??? ERS_InventarioFerreteria.md    # Especificaci√≥n de Requisitos
 ?   ??? 02-DDA/
-?   ?   ??? DDA_InventarioFerreteria.md    # Documento de DiseÒo ArquitectÛnico
+?   ?   ??? DDA_InventarioFerreteria.md    # Documento de Dise√±o Arquitect√≥nico
 ?   ??? Scripts-SQL/
-?       ??? 01-create-schema.sql           # Script de creaciÛn de BD
-?       ??? 02-hash-passwords.sql          # Script de hasheo de contraseÒas
+?       ??? 01-create-schema.sql           # Script de creaci√≥n de BD
+?       ??? 02-hash-passwords.sql          # Script de hasheo de contrase√±as
 ?
 ??? .gitignore                              # Archivos ignorados por Git
 ??? README.md                               # Este archivo
-??? InventarioFerreteria.sln                # SoluciÛn de Visual Studio
+??? InventarioFerreteria.sln                # Soluci√≥n de Visual Studio
 ```
 
 ---
 
 ## ??? Base de Datos
 
-### Modelo Entidad-RelaciÛn
+### Modelo Entidad-Relaci√≥n
 
 #### Tablas Principales
 
@@ -527,7 +527,7 @@ InventarioFerreteria/
 - direccion (text)
 ```
 
-**5. logoperaciones** (AuditorÌa)
+**5. logoperaciones** (Auditor√≠a)
 ```sql
 - id (PK, serial)
 - operacion (varchar(50))
@@ -541,12 +541,12 @@ InventarioFerreteria/
 ### Constraints y Validaciones
 
 ```sql
--- ValidaciÛn de precios
+-- Validaci√≥n de precios
 CHECK (preciocompra > 0)
 CHECK (precioventa > 0)
 CHECK (precioventa >= preciocompra)
 
--- ValidaciÛn de stock
+-- Validaci√≥n de stock
 CHECK (stock >= 0)
 CHECK (stockminimo >= 0)
 
@@ -555,7 +555,7 @@ UNIQUE (codigo)
 UNIQUE (nombreusuario)
 ```
 
-### Õndices para OptimizaciÛn
+### √çndices para Optimizaci√≥n
 
 ```sql
 CREATE INDEX idx_articulos_codigo ON articulos(codigo);
@@ -572,23 +572,23 @@ Ver script completo en: `docs/Scripts-SQL/01-create-schema.sql`
 - `admin` / `Admin123!` (Administrador)
 - `usuario` / `Usuario123!` (Usuario)
 
-**CategorÌas:**
+**Categor√≠as:**
 1. Herramientas Manuales
-2. Herramientas ElÈctricas
-3. Materiales de ConstrucciÛn
+2. Herramientas El√©ctricas
+3. Materiales de Construcci√≥n
 4. Pintura
-5. PlomerÌa
+5. Plomer√≠a
 6. Electricidad
 
 **Proveedores:**
-1. FerreterÌa Total S.A.
+1. Ferreter√≠a Total S.A.
 2. Distribuidora El Tornillo
 3. Importadora HerramientasPlus
 
-**ArtÌculos de ejemplo:**
-- MART-001: Martillo de UÒa 16oz ($15.00)
-- TALAD-001: Taladro ElÈctrico 500W ($89.99)
-- PINT-001: Pintura L·tex Blanco 1GL ($22.50)
+**Art√≠culos de ejemplo:**
+- MART-001: Martillo de U√±a 16oz ($15.00)
+- TALAD-001: Taladro El√©ctrico 500W ($89.99)
+- PINT-001: Pintura L√°tex Blanco 1GL ($22.50)
 - DEST-001: Destornillador Phillips #2 ($5.00)
 - CABLE-001: Cable THW #12 AWG ($1.50/metro)
 - TUBO-001: Tubo PVC 1/2" x 3m ($6.00)
@@ -628,7 +628,7 @@ http://localhost:5233/InventarioService.asmx?wsdl
 <Autenticar Response>
   <AutenticarResult>
     <Exito>true</Exito>
-    <Mensaje>AutenticaciÛn exitosa</Mensaje>
+    <Mensaje>Autenticaci√≥n exitosa</Mensaje>
     <Datos>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</Datos>
   </AutenticarResult>
 </AutenticarResponse>
@@ -641,8 +641,8 @@ http://localhost:5233/InventarioService.asmx?wsdl
     <InsertarArticulo xmlns="http://tempuri.org/">
       <token>JWT_TOKEN_AQUI</token>
       <codigo>TEST-001</codigo>
-      <nombre>ArtÌculo de Prueba</nombre>
-      <descripcion>DescripciÛn del artÌculo</descripcion>
+      <nombre>Art√≠culo de Prueba</nombre>
+      <descripcion>Descripci√≥n del art√≠culo</descripcion>
       <categoriaId>1</categoriaId>
       <precioCompra>10.00</precioCompra>
       <precioVenta>20.00</precioVenta>
@@ -682,11 +682,11 @@ http://localhost:5233/InventarioService.asmx?wsdl
 ```xml
 <soap:Fault>
   <faultcode>soap:Client</faultcode>
-  <faultstring>CÛdigo de artÌculo ya existe</faultstring>
+  <faultstring>C√≥digo de art√≠culo ya existe</faultstring>
   <detail>
     <ValidationFault>
       <Codigo>409</Codigo>
-      <Mensaje>CÛdigo duplicado</Mensaje>
+      <Mensaje>C√≥digo duplicado</Mensaje>
     </ValidationFault>
   </detail>
 </soap:Fault>
@@ -694,15 +694,15 @@ http://localhost:5233/InventarioService.asmx?wsdl
 
 ---
 
-## ?? DocumentaciÛn TÈcnica
+## ?? Documentaci√≥n T√©cnica
 
 ### Documentos Disponibles
 
-| Documento | UbicaciÛn | Responsable | DescripciÛn |
+| Documento | Ubicaci√≥n | Responsable | Descripci√≥n |
 |-----------|-----------|-------------|-------------|
-| **ERS** | `docs/01-ERS/ERS_InventarioFerreteria.md` | Anahy | EspecificaciÛn de Requisitos del Sistema<br>ï Casos de uso<br>ï Requerimientos funcionales y no funcionales<br>ï Modelo de dominio |
-| **DDA** | `docs/02-DDA/DDA_InventarioFerreteria.md` | Anahy | Documento de DiseÒo ArquitectÛnico<br>ï Arquitectura N-Capas<br>ï Diagramas de clases y secuencia<br>ï Modelo de base de datos<br>ï DefiniciÛn WSDL/XSD |
-| **Scripts SQL** | `docs/Scripts-SQL/` | Anahy | ï 01-create-schema.sql (CreaciÛn de BD)<br>ï 02-hash-passwords.sql (Hasheo de contraseÒas) |
+| **ERS** | `docs/01-ERS/ERS_InventarioFerreteria.md` | Anahy | Especificaci√≥n de Requisitos del Sistema<br>‚Ä¢ Casos de uso<br>‚Ä¢ Requerimientos funcionales y no funcionales<br>‚Ä¢ Modelo de dominio |
+| **DDA** | `docs/02-DDA/DDA_InventarioFerreteria.md` | Anahy | Documento de Dise√±o Arquitect√≥nico<br>‚Ä¢ Arquitectura N-Capas<br>‚Ä¢ Diagramas de clases y secuencia<br>‚Ä¢ Modelo de base de datos<br>‚Ä¢ Definici√≥n WSDL/XSD |
+| **Scripts SQL** | `docs/Scripts-SQL/` | Anahy | ‚Ä¢ 01-create-schema.sql (Creaci√≥n de BD)<br>‚Ä¢ 02-hash-passwords.sql (Hasheo de contrase√±as) |
 
 ### Diagramas
 
@@ -711,10 +711,10 @@ Los diagramas se encuentran documentados en los archivos ERS y DDA:
 - **Diagrama de Casos de Uso** (ERS)
 - **Diagrama de Clases** (DDA)
 - **Diagramas de Secuencia** (DDA)
-  - AutenticaciÛn
-  - Insertar ArtÌculo
-  - Consultar ArtÌculo
-- **Diagrama de Entidad-RelaciÛn** (DDA)
+  - Autenticaci√≥n
+  - Insertar Art√≠culo
+  - Consultar Art√≠culo
+- **Diagrama de Entidad-Relaci√≥n** (DDA)
 - **Diagrama de Despliegue** (DDA)
 - **Diagrama de Arquitectura N-Capas** (DDA)
 
@@ -724,15 +724,15 @@ Los diagramas se encuentran documentados en los archivos ERS y DDA:
 
 ### Problema 1: No se puede conectar a PostgreSQL
 
-**SÌntomas:**
+**S√≠ntomas:**
 ```
 Npgsql.NpgsqlException: Failed to connect to localhost:5432
 ```
 
 **Soluciones:**
 
-1. **Verificar que PostgreSQL estÈ ejecut·ndose:**
-   - Windows: Buscar "services.msc" ? Buscar "PostgreSQL" ? Verificar que estÈ "Running"
+1. **Verificar que PostgreSQL est√© ejecut√°ndose:**
+   - Windows: Buscar "services.msc" ? Buscar "PostgreSQL" ? Verificar que est√© "Running"
    - Linux: `sudo systemctl status postgresql`
 
 2. **Verificar credenciales en appsettings.json:**
@@ -747,42 +747,42 @@ Npgsql.NpgsqlException: Failed to connect to localhost:5432
    ```
 
 4. **Verificar firewall:**
-   - Asegurar que el puerto 5432 estÈ abierto
+   - Asegurar que el puerto 5432 est√© abierto
 
 ---
 
-### Problema 2: Error de autenticaciÛn ("Token inv·lido")
+### Problema 2: Error de autenticaci√≥n ("Token inv√°lido")
 
-**SÌntomas:**
+**S√≠ntomas:**
 ```
-? Token inv·lido o expirado
+? Token inv√°lido o expirado
 ```
 
 **Causas comunes:**
 
-1. **Las contraseÒas NO est·n hasheadas con BCrypt**
+1. **Las contrase√±as NO est√°n hasheadas con BCrypt**
    
-   **SoluciÛn:** Ejecutar el script de hasheo:
+   **Soluci√≥n:** Ejecutar el script de hasheo:
    ```sql
    -- En pgAdmin:
    -- Abrir y ejecutar: docs/Scripts-SQL/02-hash-passwords.sql
    ```
 
-2. **ContraseÒa incorrecta**
+2. **Contrase√±a incorrecta**
    
    **Credenciales correctas:**
    - admin / Admin123!
    - usuario / Usuario123!
 
-3. **Token expirado** (despuÈs de 8 horas)
+3. **Token expirado** (despu√©s de 8 horas)
    
-   **SoluciÛn:** Volver a autenticarse (OpciÛn 1 del men˙)
+   **Soluci√≥n:** Volver a autenticarse (Opci√≥n 1 del men√∫)
 
 ---
 
 ### Problema 3: El servidor no inicia
 
-**SÌntomas:**
+**S√≠ntomas:**
 ```
 Failed to bind to address http://localhost:5233
 ```
@@ -805,24 +805,24 @@ Failed to bind to address http://localhost:5233
    "applicationUrl": "http://localhost:5234"
    ```
    
-   **Nota:** TambiÈn cambiar en el cliente (Program.cs):
+   **Nota:** Tambi√©n cambiar en el cliente (Program.cs):
    ```csharp
    private const string ServiceUrl = "http://localhost:5234/InventarioService.asmx";
    ```
 
 ---
 
-### Problema 4: Error al insertar artÌculo
+### Problema 4: Error al insertar art√≠culo
 
-**SÌntomas:**
+**S√≠ntomas:**
 ```
-? Error: CÛdigo de artÌculo ya existe
+? Error: C√≥digo de art√≠culo ya existe
 ```
 
 **Causas:**
 
-1. **CÛdigo duplicado** (validaciÛn correcta)
-   - Usar un cÛdigo diferente
+1. **C√≥digo duplicado** (validaci√≥n correcta)
+   - Usar un c√≥digo diferente
 
 2. **Precio venta < Precio compra**
    ```
@@ -830,11 +830,11 @@ Failed to bind to address http://localhost:5233
    ```
    - Ajustar los precios
 
-3. **CategorÌa o Proveedor inexistente**
+3. **Categor√≠a o Proveedor inexistente**
    ```
-   ? Error: La categorÌa especificada no existe
+   ? Error: La categor√≠a especificada no existe
    ```
-   - Verificar IDs v·lidos en la base de datos:
+   - Verificar IDs v√°lidos en la base de datos:
      ```sql
      SELECT id, nombre FROM categorias;
      SELECT id, nombre FROM proveedores;
@@ -844,9 +844,9 @@ Failed to bind to address http://localhost:5233
 
 ### Problema 5: No se pueden ejecutar ambos proyectos
 
-**SoluciÛn para Visual Studio:**
+**Soluci√≥n para Visual Studio:**
 
-1. Click derecho en la **SoluciÛn** (no en un proyecto individual)
+1. Click derecho en la **Soluci√≥n** (no en un proyecto individual)
 2. **"Configurar proyectos de inicio"**
 3. **"Varios proyectos de inicio"**
 4. Marcar como "Iniciar":
@@ -855,7 +855,7 @@ Failed to bind to address http://localhost:5233
 5. **Orden:** Servidor primero, Cliente segundo
 6. Click **"Aceptar"**
 
-**SoluciÛn alternativa (2 instancias de Visual Studio):**
+**Soluci√≥n alternativa (2 instancias de Visual Studio):**
 
 1. Abrir 2 Visual Studios
 2. En la primera: Ejecutar solo SoapService
@@ -863,9 +863,9 @@ Failed to bind to address http://localhost:5233
 
 ---
 
-### Problema 6: Error de compilaciÛn
+### Problema 6: Error de compilaci√≥n
 
-**SÌntomas:**
+**S√≠ntomas:**
 ```
 Error CS0246: The type or namespace name 'X' could not be found
 ```
@@ -910,7 +910,7 @@ Editar `appsettings.json`:
 {
   "Logging": {
     "LogLevel": {
-      "Default": "Debug",  // Cambiar a Debug para m·s detalle
+      "Default": "Debug",  // Cambiar a Debug para m√°s detalle
       "Microsoft.AspNetCore": "Warning"
     }
   }
@@ -923,45 +923,45 @@ Editar `appsettings.json`:
 
 ### Pruebas Funcionales (Manual)
 
-#### Test 1: AutenticaciÛn Exitosa
+#### Test 1: Autenticaci√≥n Exitosa
 1. Ejecutar cliente
-2. Seleccionar opciÛn 1
+2. Seleccionar opci√≥n 1
 3. Ingresar: admin / Admin123!
 4. **Esperado:** ? Token recibido
 
-#### Test 2: AutenticaciÛn Fallida
-1. Ingresar usuario o contraseÒa incorrecta
-2. **Esperado:** ? "Credenciales inv·lidas"
+#### Test 2: Autenticaci√≥n Fallida
+1. Ingresar usuario o contrase√±a incorrecta
+2. **Esperado:** ? "Credenciales inv√°lidas"
 
-#### Test 3: Insertar ArtÌculo V·lido
+#### Test 3: Insertar Art√≠culo V√°lido
 1. Autenticarse
-2. OpciÛn 2
-3. Ingresar datos v·lidos (cÛdigo ˙nico, precios coherentes)
-4. **Esperado:** ? ArtÌculo insertado
+2. Opci√≥n 2
+3. Ingresar datos v√°lidos (c√≥digo √∫nico, precios coherentes)
+4. **Esperado:** ? Art√≠culo insertado
 
-#### Test 4: CÛdigo Duplicado
-1. Insertar artÌculo con cÛdigo existente (ej. MART-001)
-2. **Esperado:** ? Error de validaciÛn
+#### Test 4: C√≥digo Duplicado
+1. Insertar art√≠culo con c√≥digo existente (ej. MART-001)
+2. **Esperado:** ? Error de validaci√≥n
 
-#### Test 5: Precios Inv·lidos
+#### Test 5: Precios Inv√°lidos
 1. Intentar: Precio compra > Precio venta
-2. **Esperado:** ? Error de validaciÛn
+2. **Esperado:** ? Error de validaci√≥n
 
-#### Test 6: Consultar ArtÌculo Existente
-1. OpciÛn 3, cÛdigo: MART-001
-2. **Esperado:** ? Detalles del artÌculo
+#### Test 6: Consultar Art√≠culo Existente
+1. Opci√≥n 3, c√≥digo: MART-001
+2. **Esperado:** ? Detalles del art√≠culo
 
-#### Test 7: Consultar ArtÌculo Inexistente
-1. OpciÛn 3, cÛdigo: NOEXISTE
-2. **Esperado:** ? "ArtÌculo no encontrado"
+#### Test 7: Consultar Art√≠culo Inexistente
+1. Opci√≥n 3, c√≥digo: NOEXISTE
+2. **Esperado:** ? "Art√≠culo no encontrado"
 
-#### Test 8: Listar ArtÌculos
-1. OpciÛn 4
-2. **Esperado:** ? Tabla con todos los artÌculos
+#### Test 8: Listar Art√≠culos
+1. Opci√≥n 4
+2. **Esperado:** ? Tabla con todos los art√≠culos
 
 #### Test 9: Alerta de Stock Bajo
-1. Consultar artÌculo con stock < stock mÌnimo
-2. **Esperado:** ?? Indicador de reposiciÛn
+1. Consultar art√≠culo con stock < stock m√≠nimo
+2. **Esperado:** ?? Indicador de reposici√≥n
 
 ### Pruebas con SoapUI
 
@@ -971,11 +971,11 @@ Editar `appsettings.json`:
    ```
 
 2. **Crear TestSuite:**
-   - Test: AutenticaciÛn
-   - Test: Insertar artÌculo
-   - Test: Consultar artÌculo
-   - Test: Listar artÌculos
-   - Test: Validaciones (cÛdigos duplicados, precios inv·lidos)
+   - Test: Autenticaci√≥n
+   - Test: Insertar art√≠culo
+   - Test: Consultar art√≠culo
+   - Test: Listar art√≠culos
+   - Test: Validaciones (c√≥digos duplicados, precios inv√°lidos)
 
 3. **Medir rendimiento:**
    - Verificar latencias < 500ms (RNF2)
@@ -988,12 +988,12 @@ Editar `appsettings.json`:
 
 | ID | Requerimiento | Estado |
 |----|---------------|--------|
-| RF1 | GestiÛn de artÌculos | ? Implementado |
-| RF2 | Registro de nuevo artÌculo | ? Implementado |
-| RF3 | ValidaciÛn de datos | ? Implementado |
-| RF4 | Consulta de artÌculos | ? Implementado |
-| RF5 | Servicio SOAP: insertar artÌculo | ? Implementado |
-| RF6 | Servicio SOAP: consultar artÌculo | ? Implementado |
+| RF1 | Gesti√≥n de art√≠culos | ? Implementado |
+| RF2 | Registro de nuevo art√≠culo | ? Implementado |
+| RF3 | Validaci√≥n de datos | ? Implementado |
+| RF4 | Consulta de art√≠culos | ? Implementado |
+| RF5 | Servicio SOAP: insertar art√≠culo | ? Implementado |
+| RF6 | Servicio SOAP: consultar art√≠culo | ? Implementado |
 | RF7 | Manejo de stock | ? Implementado |
 | RF8 | Persistencia de datos | ? PostgreSQL |
 | RF9 | Interfaz de usuario | ? Cliente consola |
@@ -1006,27 +1006,27 @@ Editar `appsettings.json`:
 | RNF1 | Arquitectura N-Capas | ? 5 proyectos separados |
 | RNF2 | Rendimiento ? 500ms | ? Optimizado |
 | RNF3 | Escalabilidad | ? Modular |
-| RNF4 | Mantenibilidad | ? SOLID, cÛdigo limpio |
+| RNF4 | Mantenibilidad | ? SOLID, c√≥digo limpio |
 | RNF5 | Interoperabilidad SOAP | ? WSDL 1.1 |
-| RNF6 | Seguridad b·sica | ? JWT + BCrypt |
+| RNF6 | Seguridad b√°sica | ? JWT + BCrypt |
 | RNF7 | Confiabilidad | ? Logs y excepciones |
 | RNF8 | Usabilidad | ? Mensajes claros |
 | RNF9 | Portabilidad | ? Windows/Linux |
-| RNF10 | Pruebas | ? Unitarias + integraciÛn |
+| RNF10 | Pruebas | ? Unitarias + integraci√≥n |
 
 ---
 
-## ?? PrÛximos Pasos
+## ?? Pr√≥ximos Pasos
 
 ### Para Desarrollo
 
-- [ ] Agregar m·s operaciones SOAP (actualizar, eliminar artÌculos)
+- [ ] Agregar m√°s operaciones SOAP (actualizar, eliminar art√≠culos)
 - [ ] Implementar interfaz web (ASP.NET MVC/Razor)
-- [ ] Agregar paginaciÛn en listado de artÌculos
-- [ ] Implementar b˙squeda avanzada (filtros m˙ltiples)
+- [ ] Agregar paginaci√≥n en listado de art√≠culos
+- [ ] Implementar b√∫squeda avanzada (filtros m√∫ltiples)
 - [ ] Agregar reportes en PDF
 
-### Para DocumentaciÛn
+### Para Documentaci√≥n
 
 - [ ] Completar diagramas UML (ver docs/DDA)
 - [ ] Crear manual de usuario
@@ -1035,7 +1035,7 @@ Editar `appsettings.json`:
 
 ### Para Despliegue
 
-- [ ] Dockerizar la aplicaciÛn
+- [ ] Dockerizar la aplicaci√≥n
 - [ ] CI/CD con GitHub Actions
 - [ ] Despliegue en Azure/AWS
 - [ ] Configurar SSL/HTTPS
@@ -1046,7 +1046,7 @@ Editar `appsettings.json`:
 
 ### Equipo de Desarrollo
 
-- **Anahy Herrera** - DocumentaciÛn y BD
+- **Anahy Herrera** - Documentaci√≥n y BD
 - **Oscar [Apellido]** - Backend y Servicios
 - **Camila [Apellido]** - Frontend y DevOps
 
@@ -1057,7 +1057,7 @@ Editar `appsettings.json`:
 ### Issues y Bugs
 
 Para reportar problemas o solicitar funcionalidades:
-1. Ir a la secciÛn **Issues** del repositorio
+1. Ir a la secci√≥n **Issues** del repositorio
 2. Click en **New Issue**
 3. Describir el problema con detalles
 4. Asignar etiquetas apropiadas (bug, enhancement, documentation)
@@ -1066,9 +1066,9 @@ Para reportar problemas o solicitar funcionalidades:
 
 ## ?? Licencia
 
-Este proyecto es de car·cter acadÈmico desarrollado para la asignatura de [Nombre de la Materia].
+Este proyecto es de car√°cter acad√©mico desarrollado para la asignatura de [Nombre de la Materia].
 
-**InstituciÛn:** [Nombre de la Universidad]  
+**Instituci√≥n:** [Nombre de la Universidad]  
 **Profesor:** [Nombre del Profesor]  
 **Fecha:** Octubre 2025  
 
@@ -1076,13 +1076,13 @@ Este proyecto es de car·cter acadÈmico desarrollado para la asignatura de [Nombr
 
 ## ?? Agradecimientos
 
-- A nuestro profesor [Nombre] por la guÌa y asesorÌa
-- A la comunidad de .NET por la documentaciÛn
+- A nuestro profesor [Nombre] por la gu√≠a y asesor√≠a
+- A la comunidad de .NET por la documentaci√≥n
 - A PostgreSQL por la robustez de su sistema
 
 ---
 
-## ?? Checklist de Inicio R·pido
+## ?? Checklist de Inicio R√°pido
 
 - [ ] Clonar repositorio
 - [ ] Instalar .NET 9 SDK
@@ -1092,13 +1092,13 @@ Este proyecto es de car·cter acadÈmico desarrollado para la asignatura de [Nombr
 - [ ] Ejecutar script `02-hash-passwords.sql`
 - [ ] Configurar `appsettings.json` con tu password de PostgreSQL
 - [ ] Ejecutar `dotnet restore`
-- [ ] Configurar proyectos de inicio m˙ltiples en Visual Studio
+- [ ] Configurar proyectos de inicio m√∫ltiples en Visual Studio
 - [ ] Presionar F5 y probar el sistema
 - [ ] Autenticarse con admin/Admin123!
-- [ ] Listar artÌculos (OpciÛn 4)
+- [ ] Listar art√≠culos (Opci√≥n 4)
 
 ---
 
-**°Sistema listo para usar! ??**
+**¬°Sistema listo para usar! ??**
 
-*⁄ltima actualizaciÛn: Octubre 2025*
+*√öltima actualizaci√≥n: Octubre 2025*
